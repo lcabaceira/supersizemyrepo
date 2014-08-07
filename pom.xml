@@ -1,0 +1,91 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.alfresco.consulting</groupId>
+  <artifactId>super-size-my-repo</artifactId>
+  <version>1.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>SuperSizeMyRepo</name>
+  <description>Create lots of content for your alfresco repository</description>
+  
+ <scm>
+      <connection>scm:git:git@github.com:lcabaceira/supersizemyrepo.git</connection>
+      <url>scm:git:git@github.com:lcabaceira/supersizemyrepo.git</url>
+      <developerConnection>scm:git:git@github.com:lcabaceira/supersizemyrepo.git</developerConnection>
+      <tag>HEAD</tag>
+  </scm>
+
+  <properties>
+    <chemistry.version>0.6.0</chemistry.version>
+  </properties>
+  
+<dependencies>
+
+<dependency>
+    <groupId>commons-cli</groupId>
+    <artifactId>commons-cli</artifactId>
+    <version>1.2</version>
+</dependency>
+
+</dependencies>
+
+<distributionManagement>
+        <repository>
+          <id>cloudbees-private-release-repository</id>
+          <url>dav:https://repository-lcabacei.forge.cloudbees.com/supersizemyrepo/</url>
+        </repository>
+        <snapshotRepository>
+          <id>cloudbees-private-snapshot-repository</id>
+          <url>dav:https://repository-lcabacei.forge.cloudbees.com/supersizemyrepo/</url>
+        </snapshotRepository>
+</distributionManagement>
+
+<build>
+
+<plugins>
+
+<plugin>
+    <artifactId>maven-assembly-plugin</artifactId>
+    <version>2.4</version>
+    <configuration>
+        <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+        </descriptorRefs>
+        <archive>
+            <manifest>
+                 <mainClass>org.alfresco.consulting.supersizemyrepo.GlobalCreator</mainClass>
+            </manifest>
+    </archive>
+</configuration>
+<executions>
+    <execution>
+        <id>create-executable-jar</id>
+        <phase>package</phase>
+        <goals>
+            <goal>single</goal>
+        </goals>
+    </execution>
+</executions>
+</plugin>
+
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-release-plugin</artifactId>
+    <version>2.4.2</version>
+</plugin>
+
+</plugins>
+<!--
+<resources>
+      <resource>
+        <directory>/Users/astrachan/data/workspaces/projects/CreateLoadsStandalone</directory>
+        <excludes>
+          <exclude>.classpath</exclude>
+          <exclude>.project</exclude>
+          <exclude>.settings/org.eclipse.jdt.core.prefs</exclude>
+        </excludes>
+      </resource>
+</resources>
+-->
+</build>
+
+</project>
