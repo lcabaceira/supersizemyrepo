@@ -1,1 +1,10 @@
+alf_data_dev
+**.iml
+**.iws
+**/libs
+**/target
 .idea
+target
+**.log
+**.log*
+libs
