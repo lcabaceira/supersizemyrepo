@@ -45,7 +45,7 @@ public final class PropertiesLocator
     * Loads a properties file and returns it.
     *
     * @return the properties.
-    * @throws org.alfresco.consulting.infratests.locator.exceptions.PropertiesLocatorException
+    * @throws org.alfresco.consulting.locator.exceptions.PropertiesLocatorException
     *          if could not load resource.
     */
    public static Properties getProperties() throws PropertiesLocatorException
@@ -58,7 +58,7 @@ public final class PropertiesLocator
     *
     * @param resource name of the resource file.
     * @return the properties.
-    * @throws org.alfresco.consulting.infratests.locator.exceptions.PropertiesLocatorException
+    * @throws org.alfresco.consulting.locator.exceptions.PropertiesLocatorException
     *          if could not load resource.
     */
    public static Properties getProperties(String resource) throws PropertiesLocatorException

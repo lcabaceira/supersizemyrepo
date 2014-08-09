@@ -3,6 +3,8 @@ alf_data_dev
 **.iws
 **/libs
 **/target
+**/deployment
+deployment
 .idea
 target
 **.log
