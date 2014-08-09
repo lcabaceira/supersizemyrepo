@@ -18,7 +18,7 @@ import org.apache.poi.xslf.usermodel.*;
 
 import javax.imageio.ImageIO;
 
-public class JpgAgent extends Thread  {
+public class JpgAgent extends Thread implements Runnable {
     /**
      * @param args
      * @throws java.io.IOException
@@ -28,7 +28,7 @@ public class JpgAgent extends Thread  {
     private static String files_deployment_location = props.getProperty("files_deployment_location");
     private static String images_location = props.getProperty("images_location");
 
-    public static void main(String[] args) throws IOException {
+    public void run() {
 
         RandomWords.init();
         Calendar cal = Calendar.getInstance();
@@ -56,14 +56,11 @@ public class JpgAgent extends Thread  {
             out.close();
 
 
-
-
-
         } catch (Exception e) {
             System.out.println("First Catch");
             e.printStackTrace();
         }
 
-
     }
+
 }

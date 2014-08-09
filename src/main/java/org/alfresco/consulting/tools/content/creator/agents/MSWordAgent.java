@@ -14,7 +14,7 @@ import org.alfresco.consulting.words.RandomWords;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.usermodel.*;
 
-public class MSWordAgent extends Thread {
+public class MSWordAgent extends Thread implements Runnable {
     /**
      * @param args
      * @throws IOException
@@ -24,13 +24,19 @@ public class MSWordAgent extends Thread {
     private static String files_deployment_location = props.getProperty("files_deployment_location");
     private static String images_location = props.getProperty("images_location");
 
-    public static void main(String[] args) throws IOException {
+    public void run(){
+
         RandomWords.init();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         String date = dateFormat.format(cal.getTime());
         // Create a document file
-        CustomXWPFDocument document = new CustomXWPFDocument();
+        CustomXWPFDocument document = null;
+        try {
+            document = new CustomXWPFDocument();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // insert doc details
         // Createa a para -1
@@ -99,19 +105,16 @@ public class MSWordAgent extends Thread {
             int size = files.length;
             Random rand = new Random();
             int number = rand.nextInt(size);
-            // for each pathname in pathname array
-//            for(File path:files)
-//            {
-//                // prints file and directory paths
-//                System.out.println(path);
-//            }
             File randomImage = files[number];
             // adding local random image
-            String blipId = paragraphX.getDocument().addPictureData(new FileInputStream(randomImage),Document.PICTURE_TYPE_JPEG);
+            String blipId = null;
+            blipId = paragraphX.getDocument().addPictureData(new FileInputStream(randomImage), Document.PICTURE_TYPE_JPEG);
             document.createPicture(blipId,document.getNextPicNameNumber(Document.PICTURE_TYPE_JPEG),800, 600);
         } catch (InvalidFormatException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+        }   catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
 
         XWPFParagraph p3 = document.createParagraph();
@@ -144,12 +147,15 @@ public class MSWordAgent extends Thread {
             XWPFParagraph paragraphY = document.createParagraph();
             paragraphY.setAlignment(ParagraphAlignment.CENTER);
             // adding http image
-            InputStream is =new URL("http://lorempixel.com/g/800/600/").openStream();
+            InputStream is = null;
+            is = new URL("http://lorempixel.com/g/800/600/").openStream();
             String blipIdw = paragraphY.getDocument().addPictureData(is,Document.PICTURE_TYPE_JPEG);
             document.createPicture(blipIdw,document.getNextPicNameNumber(Document.PICTURE_TYPE_JPEG),800, 600);
         } catch (InvalidFormatException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+        }  catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
         FileOutputStream outStream = null;
@@ -178,5 +184,7 @@ public class MSWordAgent extends Thread {
             System.out.println("Third Catch");
             e.printStackTrace();
         }
+
     }
+
 }

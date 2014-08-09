@@ -13,13 +13,13 @@ import java.util.Calendar;
 import java.util.Properties;
 import java.util.Random;
 
-public class MSExcelAgent extends Thread {
+public class MSExcelAgent extends Thread implements Runnable {
 
     private static Properties props = PropertiesLocator.getProperties("alfresco-consulting.properties");
     private static String files_deployment_location = props.getProperty("files_deployment_location");
     private static String images_location = props.getProperty("images_location");
 
-    public static void main(String[] args) throws Exception{
+    public void run(){
         RandomWords.init();
         /* Create a Workbook and Worksheet */
         HSSFWorkbook my_workbook = new HSSFWorkbook();
@@ -33,13 +33,18 @@ public class MSExcelAgent extends Thread {
         int number = rand.nextInt(size);
         File randomImage = files[number];
 
-        InputStream my_banner_image = new FileInputStream(randomImage);
+        int my_picture_id = 0;
+        try {
+            InputStream my_banner_image = new FileInputStream(randomImage);
                 /* Convert Image to byte array */
-        byte[] bytes = IOUtils.toByteArray(my_banner_image);
+            byte[] bytes = IOUtils.toByteArray(my_banner_image);
                 /* Add Picture to workbook and get a index for the picture */
-        int my_picture_id = my_workbook.addPicture(bytes, Workbook.PICTURE_TYPE_JPEG);
+            my_picture_id = my_workbook.addPicture(bytes, Workbook.PICTURE_TYPE_JPEG);
                 /* Close Input Stream */
-        my_banner_image.close();
+            my_banner_image.close();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
                 /* Create the drawing container */
         HSSFPatriarch drawing = my_sheet.createDrawingPatriarch();
                 /* Create an anchor point */
@@ -179,59 +184,20 @@ public class MSExcelAgent extends Thread {
 
         Calendar cal = Calendar.getInstance();
         String fileName =  cal.getTimeInMillis() +"MSExcelSSMR.xls";
-        FileOutputStream out = new FileOutputStream(files_deployment_location + "/" + fileName);
-        my_workbook.write(out);
-        out.close();
+        try {
+            FileOutputStream out = new FileOutputStream(files_deployment_location + "/" + fileName);
+            my_workbook.write(out);
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
         BulkImportManifestCreator.createBulkManifest(fileName);
 
-//        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-//        String date = dateFormat.format(cal.getTime());
-//
-//        String startTag="<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-//                "<!DOCTYPE properties SYSTEM \"http://java.sun.com/dtd/properties.dtd\">";
-//
-//        String metadataXml = startTag +
-//                "<properties>\n" +
-//                "<entry key=\"type\">cm:content</entry>\n" +
-//                "<entry key=\"aspects\">cm:versionable,cm:dublincore</entry>\n" +
-//                "<entry key=\"cm:title\">A Daily Report from " + date + "</entry>\n" +
-//                "<entry key=\"cm:description\">Contains a random photo from local repository and another from the web via HTTP</entry>\n" +
-//                "<entry key=\"cm:created\">1901-01-01T12:34:56.789+10:00</entry>\n" +
-//                "<entry key=\"cm:author\">SuperSizeMyRepo</entry>\n" +
-//                "<entry key=\"cm:publisher\">SuperSizeMyRepo</entry>\n" +
-//                "<entry key=\"cm:contributor\">SuperSizeMyRepo</entry>\n" +
-//                "<entry key=\"cm:type\">Photograph</entry>\n" +
-//                "<entry key=\"cm:identifier\">" + fileName + "</entry>\n" +
-//                "<entry key=\"cm:dcsource\">SuperSizeMyRepo</entry>\n" +
-//                "<entry key=\"cm:coverage\">Worldwide</entry>\n" +
-//                "<entry key=\"cm:rights\">Copyright (c) Alfresco 2014, All Rights Reserved</entry>\n" +
-//                "<entry key=\"cm:subject\">Random content and Random Images</entry>\n" +
-//                "</properties>";
-//
-//
-//
-//        String metaDatafileName =  fileName + ".metadata.properties.xml";
-//        String metaDatafilePath = files_deployment_location + "/" + metaDatafileName;
-//        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-//        DocumentBuilder builder;
-//        try
-//        {
-//            builder = factory.newDocumentBuilder();
-//            // Use String reader
-//            org.w3c.dom.Document metadocument = builder.parse( new InputSource(new StringReader(metadataXml) ) );
-//            TransformerFactory tranFactory = TransformerFactory.newInstance();
-//            Transformer aTransformer = tranFactory.newTransformer();
-//            Source src = new DOMSource( metadocument );
-//            Result dest = new StreamResult( new File(metaDatafilePath) );
-//            aTransformer.transform( src, dest );
-//        } catch (Exception e)
-//        {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//
+
     }
+
+
 
 
 }
