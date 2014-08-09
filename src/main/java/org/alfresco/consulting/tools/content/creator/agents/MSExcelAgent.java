@@ -15,7 +15,7 @@ import java.util.Random;
 
 public class MSExcelAgent extends Thread implements Runnable {
 
-    private static Properties props = PropertiesLocator.getProperties("alfresco-consulting.properties");
+    private static Properties props = PropertiesLocator.getProperties("super-size-my-repo.properties");
     private static String files_deployment_location = props.getProperty("files_deployment_location");
     private static String images_location = props.getProperty("images_location");
 

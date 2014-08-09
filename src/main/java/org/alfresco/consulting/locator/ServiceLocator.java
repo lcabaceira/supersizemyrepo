@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public final class ServiceLocator
 {
-   private static final String PROPERTIES_FILE = "alfresco-consulting.properties";
+   private static final String PROPERTIES_FILE = "super-size-my-repo.properties";
    private static final ServiceLocator me;
    private final InitialContext context;
    private Map cache;

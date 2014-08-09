@@ -14,7 +14,7 @@ import java.util.*;
 public final class PropertiesLocator
 {
    private static final String INITIAL_CONTEXT_PROPERTY_PREFIX = "initialcontext";
-   private static final String DEFAULT_FILE = "alfresco-consulting.properties";
+   private static final String DEFAULT_FILE = "super-size-my-repo.properties";
    private static final PropertiesLocator me;
    private final Map cache;
 

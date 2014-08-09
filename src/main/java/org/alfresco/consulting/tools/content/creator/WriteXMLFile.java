@@ -17,7 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class WriteXMLFile {
-    private static Properties props = PropertiesLocator.getProperties("alfresco-consulting.properties");
+    private static Properties props = PropertiesLocator.getProperties("super-size-my-repo.properties");
     private static String files_deployment_location = props.getProperty("files_deployment_location");
     public static void main(String argv[]) {
 

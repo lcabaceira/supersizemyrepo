@@ -14,7 +14,7 @@ import java.util.Properties;
 
 public class BulkImportManifestCreator
 {
-    private static Properties props = PropertiesLocator.getProperties("alfresco-consulting.properties");
+    private static Properties props = PropertiesLocator.getProperties("super-size-my-repo.properties");
     private static String files_deployment_location = props.getProperty("files_deployment_location");
     /** No-arguments constructor. */
     public BulkImportManifestCreator() {}

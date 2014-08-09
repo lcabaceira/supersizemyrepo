@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class MainExecutor {
 
 
-    private static Properties props = PropertiesLocator.getProperties("alfresco-consulting.properties");
+    private static Properties props = PropertiesLocator.getProperties("super-size-my-repo.properties");
     private static String num_Threads = props.getProperty("num_Threads");
     private static String threadPoolSize = props.getProperty("threadPoolSize");
 

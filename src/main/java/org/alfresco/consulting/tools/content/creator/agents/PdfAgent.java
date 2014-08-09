@@ -5,7 +5,6 @@ package org.alfresco.consulting.tools.content.creator.agents;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,7 +24,7 @@ import org.alfresco.consulting.words.RandomWords;
 
 public class PdfAgent extends Thread implements Runnable {
 
-    private static Properties props = PropertiesLocator.getProperties("alfresco-consulting.properties");
+    private static Properties props = PropertiesLocator.getProperties("super-size-my-repo.properties");
     private static String files_deployment_location = props.getProperty("files_deployment_location");
     private static String images_location = props.getProperty("images_location");
     private static String num_pdfThreads = props.getProperty("num_Threads");

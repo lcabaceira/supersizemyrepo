@@ -1,11 +1,6 @@
 package org.alfresco.consulting.tools.content.creator.agents;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Properties;
 import java.util.Random;
@@ -14,9 +9,6 @@ import org.alfresco.consulting.locator.PropertiesLocator;
 import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
 import org.alfresco.consulting.words.RandomWords;
 import org.apache.poi.util.IOUtils;
-import org.apache.poi.xslf.usermodel.*;
-
-import javax.imageio.ImageIO;
 
 public class JpgAgent extends Thread implements Runnable {
     /**
@@ -24,7 +16,7 @@ public class JpgAgent extends Thread implements Runnable {
      * @throws java.io.IOException
      */
 
-    private static Properties props = PropertiesLocator.getProperties("alfresco-consulting.properties");
+    private static Properties props = PropertiesLocator.getProperties("super-size-my-repo.properties");
     private static String files_deployment_location = props.getProperty("files_deployment_location");
     private static String images_location = props.getProperty("images_location");
 
