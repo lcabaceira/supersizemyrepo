@@ -132,7 +132,7 @@ How to run with maven ?
 -------
 Issue the following maven command to run the project from the root
 
-<b>mvn clean install -Prun</b> <br/>
+<b>mvn clean install</b> <br/>
 
 This will build and run all the modules and it's the easiest way to build the project
 
