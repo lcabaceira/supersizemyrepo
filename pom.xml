@@ -104,7 +104,7 @@
         </descriptorRefs>
         <archive>
             <manifest>
-                 <mainClass>org.alfresco.consulting.tools.content.creator.CreateExcelDocuments</mainClass>
+                 <mainClass>org.alfresco.consulting.tools.content.creator.executor.MainExecutor </mainClass>
             </manifest>
     </archive>
 </configuration>
