@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.alfresco.consulting</groupId>
   <artifactId>super-size-my-repo</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.2-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>SuperSizeMyRepo</name>
   <description>Create lots of content for your alfresco repository</description>
@@ -60,11 +60,11 @@
 <distributionManagement>
         <repository>
           <id>cloudbees-private-release-repository</id>
-          <url>dav:https://repository-lcabacei.forge.cloudbees.com/supersizemyrepo/</url>
+          <url>dav:https://repository-lcabacei.forge.cloudbees.com/supersizemyrepo</url>
         </repository>
         <snapshotRepository>
           <id>cloudbees-private-snapshot-repository</id>
-          <url>dav:https://repository-lcabacei.forge.cloudbees.com/supersizemyrepo/</url>
+          <url>dav:https://repository-lcabacei.forge.cloudbees.com/supersizemyrepo</url>
         </snapshotRepository>
 </distributionManagement>
 
@@ -125,6 +125,16 @@
     <version>2.4.2</version>
 </plugin>
 </plugins>
+
+<extensions>
+            <!-- Extension required to deploy a snapshot or a release to the CloudBees remote maven repository using Webdav -->
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-2</version>
+            </extension>
+        </extensions>
+        
 </build>
 
 </project>
