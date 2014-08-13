@@ -41,7 +41,13 @@ public class PdfAgent extends Thread implements Runnable {
     private static Font subFont = new Font(Font.FontFamily.HELVETICA, 16,Font.BOLD);
     private static Font smallBold = new Font(Font.FontFamily.HELVETICA, 12,Font.BOLD);
 
-
+//    public PdfAgent()
+//    {
+//        super("PdfAgent extending thread");
+//        System.out.println("PdfAgent thread created" + this);
+//        this.setPriority(MAX_PRIORITY);
+//        start();
+//    }
 
     public void run()
     {

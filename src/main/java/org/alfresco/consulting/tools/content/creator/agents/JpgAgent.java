@@ -47,7 +47,7 @@ public class JpgAgent extends Thread implements Runnable {
             String fileName =  cal.getTimeInMillis() +"_JpegImageSSMR.jpg";
             String filePath = files_deployment_location + "/" + fileName;
             // Creating the metadata file
-            BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location);
+            BulkImportManifestCreator.createBulkManifest(fileName, files_deployment_location);
             FileOutputStream out = new FileOutputStream(filePath);
             IOUtils.copy(is,out);
             out.close();
