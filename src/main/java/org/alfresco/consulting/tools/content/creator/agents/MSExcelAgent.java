@@ -17,10 +17,12 @@ public class MSExcelAgent extends Thread implements Runnable {
 
     private static String files_deployment_location;
     private static String images_location;
+    private static Properties properties;
 
-    public MSExcelAgent(String _files_deployment_location, String _images_location) {
+    public MSExcelAgent(String _files_deployment_location, String _images_location, Properties _properties) {
         this.files_deployment_location = _files_deployment_location;
         this.images_location = _images_location;
+        this.properties = _properties;
       }
 
     public void run(){
@@ -196,7 +198,7 @@ public class MSExcelAgent extends Thread implements Runnable {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location);
+        BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location, properties);
 
 
     }

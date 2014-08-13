@@ -17,6 +17,7 @@ public class MainExecutor {
 	private static String num_Threads;
 	private static String files_deployment_location;
 	private static String images_location;
+	private static Properties properties;
 	
 	private static Boolean pdf = true;
 	private static Boolean ppt = true;
@@ -24,7 +25,11 @@ public class MainExecutor {
 	private static Boolean doc = true;
 	private static Boolean jpg = true;
     
-    public static void main(String[] args) {
+    public static void main(String[] args, Properties propsUI) {
+    	
+    	if (!propsUI.isEmpty()){
+    		properties = propsUI;
+    	}
     	
    
    if (args.length > 1){
@@ -78,11 +83,11 @@ public class MainExecutor {
         
 	   				for (int i = 0; i < Integer.valueOf(num_Threads); i++) {
         	
-	   						Runnable workerppt = new MSPowerPointAgent(deployPath, images);
-	   						Runnable workerPdf = new PdfAgent(deployPath, images, num_Threads);
-	   						Runnable workerxls = new MSExcelAgent(deployPath, images);
-	   						Runnable workerdoc = new MSWordAgent(deployPath, images);
-	   						Runnable workerjpg = new JpgAgent(deployPath, images);
+	   						Runnable workerppt = new MSPowerPointAgent(deployPath, images, properties);
+	   						Runnable workerPdf = new PdfAgent(deployPath, images, num_Threads, properties);
+	   						Runnable workerxls = new MSExcelAgent(deployPath, images, properties);
+	   						Runnable workerdoc = new MSWordAgent(deployPath, images, properties);
+	   						Runnable workerjpg = new JpgAgent(deployPath, images, properties);
 
 	   						if (ppt) {executor.execute(workerppt);}
 	   						if (pdf) {executor.execute(workerPdf);}

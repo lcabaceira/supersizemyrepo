@@ -28,11 +28,13 @@ public class PdfAgent extends Thread implements Runnable {
     private static String num_pdfThreads; 
     private static String files_deployment_location;
     private static String images_location;
+    private static Properties properties;
 
-    public PdfAgent(String _files_deployment_location, String _images_location, String _numThreads) {
+    public PdfAgent(String _files_deployment_location, String _images_location, String _numThreads, Properties _properties) {
         this.files_deployment_location = _files_deployment_location;
         this.images_location = _images_location;
         this.num_pdfThreads = _numThreads;
+        this.properties = _properties;
       }
     
     
@@ -55,6 +57,7 @@ public class PdfAgent extends Thread implements Runnable {
         {
 
                 try {
+                	System.out.println ("#### props size: " + properties.size());
                     RandomWords.init();
                     DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                     Calendar cal = Calendar.getInstance();
@@ -66,7 +69,7 @@ public class PdfAgent extends Thread implements Runnable {
                     String fileName =  cal.getTimeInMillis() +"_PdfSSMR.pdf";
                     String filePath = files_deployment_location + "/" + fileName;
                     // Creating the metadata file
-                    BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location);
+                    BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location, properties);
                     PdfWriter.getInstance(document, new FileOutputStream(filePath));
                     document.open();
                     addMetaData(document);

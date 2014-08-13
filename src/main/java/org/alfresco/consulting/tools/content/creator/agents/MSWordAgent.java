@@ -22,10 +22,12 @@ public class MSWordAgent extends Thread implements Runnable {
 
     private static String files_deployment_location;
     private static String images_location;
+    private static Properties properties;
 
-    public MSWordAgent(String _files_deployment_location, String _images_location) {
+    public MSWordAgent(String _files_deployment_location, String _images_location, Properties _properties) {
         this.files_deployment_location = _files_deployment_location;
         this.images_location = _images_location;
+        this.properties = _properties;
     }
 
     public void run(){
@@ -169,7 +171,7 @@ public class MSWordAgent extends Thread implements Runnable {
             String fileName =  cal.getTimeInMillis() +"_MSWordSSMR.docx";
             String filePath = files_deployment_location + "/" + fileName;
 
-            BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location);
+            BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location, properties);
             outStream = new FileOutputStream(filePath);
 
 

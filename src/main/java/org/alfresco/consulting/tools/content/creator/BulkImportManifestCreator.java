@@ -16,6 +16,8 @@ public class BulkImportManifestCreator
 {
     private static Properties props = PropertiesLocator.getProperties("super-size-my-repo.properties");
     private static String files_deployment_location = props.getProperty("files_deployment_location");
+    private static Properties properties1 = new Properties();
+    
     /** No-arguments constructor. */
     public BulkImportManifestCreator() {}
 
@@ -30,6 +32,8 @@ public class BulkImportManifestCreator
             final String filePathAndName)
     {
         final Properties properties = new Properties();
+        
+        
         try
         {
             final FileInputStream in = new FileInputStream(filePathAndName);
@@ -55,30 +59,19 @@ public class BulkImportManifestCreator
      * @param SSMR_file  name of the file target for meta-data manifest creation
      * @return String execution log
      */
-    public static String createBulkManifest(final String SSMR_file, String path)
+    public static String createBulkManifest(final String SSMR_file, String path, Properties properties)
     {
 
     	if (path != null || !path.equals("")){
     		files_deployment_location= path;
     	}
     	
+    	// final Properties properties = new Properties();
+    	
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         String date = dateFormat.format(cal.getTime());
-        final Properties properties = new Properties();
-        properties.setProperty("type", "cm:content");
-        properties.setProperty("aspects", "cm:versionable,cm:dublincore");
-        properties.setProperty("cm:title", "Daily Report document : " + date );
-        properties.setProperty("cm:description", "");
-        properties.setProperty("cm:author", "SuperSizeMyRepo");
-        properties.setProperty("cm:publisher", "SuperSizeMyRepo");
-        properties.setProperty("cm:contributor", "SuperSizeMyRepo");
-        properties.setProperty("cm:type", "default_plus_dubincore_aspect");
-        properties.setProperty("cm:identifier", SSMR_file);
-        properties.setProperty("cm:source", "SuperSizeMyRepo");
-        properties.setProperty("cm:coverage", "General");
-        properties.setProperty("cm:rights", "");
-        properties.setProperty("cm:subject", "Metadata file created with SSMR");
+    
         FileOutputStream outStream = null;
         String metaDatafileName =  SSMR_file + ".metadata.properties.xml";
         String metaDatafilePath = files_deployment_location + "/" + metaDatafileName;
@@ -87,7 +80,31 @@ public class BulkImportManifestCreator
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        createMetaDataXmlFile(properties,outStream);
+        
+        if (!properties.isEmpty() || properties != null)
+        {
+        	createMetaDataXmlFile(properties,outStream);
+        }
+        else 
+        {
+            properties1.setProperty("type", "cm:content");
+            properties1.setProperty("aspects", "cm:versionable,cm:dublincore");
+            properties1.setProperty("cm:title", "Daily Report document : " + date );
+            properties1.setProperty("cm:description", "");
+            properties1.setProperty("cm:created", "Today");
+            properties1.setProperty("cm:author", "SuperSizeMyRepo");
+            properties1.setProperty("cm:publisher", "SuperSizeMyRepo");
+            properties1.setProperty("cm:contributor", "SuperSizeMyRepo");
+            properties1.setProperty("cm:type", "default_plus_dubincore_aspect");
+            properties1.setProperty("cm:identifier", SSMR_file);
+            properties1.setProperty("cm:source", "SuperSizeMyRepo");
+            properties1.setProperty("cm:coverage", "General");
+            properties1.setProperty("cm:rights", "");
+            properties1.setProperty("cm:subject", "Metadata file created with SSMR");
+            
+            createMetaDataXmlFile(properties1,outStream);
+        }
+        
         return "Created Manifest for " + SSMR_file + ": " + files_deployment_location + "/" + metaDatafileName;
 
     }

@@ -21,15 +21,18 @@ public class MSPowerPointAgent extends Thread implements Runnable {
 
     private static String files_deployment_location;
     private static String images_location;
+    private static Properties properties;
 
-    public MSPowerPointAgent(String _files_deployment_location, String _images_location) {
+    public MSPowerPointAgent(String _files_deployment_location, String _images_location, Properties _properties) {
         this.files_deployment_location = _files_deployment_location;
         this.images_location = _images_location;
+        this.properties = _properties;
       }
 
 
 	public void run()
     {
+		System.out.println ("#### props size: " + properties.size());
         RandomWords.init();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
@@ -75,7 +78,7 @@ public class MSPowerPointAgent extends Thread implements Runnable {
             String fileName =  cal.getTimeInMillis() +"_MSpowerpointSSMR.ppt";
             String filePath = files_deployment_location + "/" + fileName;
             // Creating the metadata file
-            BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location);
+            BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location,properties);
             FileOutputStream out = new FileOutputStream(filePath);
             ppt.write(out);
             out.close();
