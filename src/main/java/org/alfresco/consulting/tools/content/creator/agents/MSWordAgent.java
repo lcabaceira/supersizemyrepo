@@ -169,7 +169,7 @@ public class MSWordAgent extends Thread implements Runnable {
             String fileName =  cal.getTimeInMillis() +"_MSWordSSMR.docx";
             String filePath = files_deployment_location + "/" + fileName;
 
-            BulkImportManifestCreator.createBulkManifest(fileName);
+            BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location);
             outStream = new FileOutputStream(filePath);
 
 

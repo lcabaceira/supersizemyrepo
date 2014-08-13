@@ -196,7 +196,7 @@ public class MSExcelAgent extends Thread implements Runnable {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        BulkImportManifestCreator.createBulkManifest(fileName);
+        BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location);
 
 
     }

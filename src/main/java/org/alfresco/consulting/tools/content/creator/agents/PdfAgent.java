@@ -41,13 +41,7 @@ public class PdfAgent extends Thread implements Runnable {
     private static Font subFont = new Font(Font.FontFamily.HELVETICA, 16,Font.BOLD);
     private static Font smallBold = new Font(Font.FontFamily.HELVETICA, 12,Font.BOLD);
 
-//    public PdfAgent()
-//    {
-//        super("PdfAgent extending thread");
-//        System.out.println("PdfAgent thread created" + this);
-//        this.setPriority(MAX_PRIORITY);
-//        start();
-//    }
+
 
     public void run()
     {
@@ -66,7 +60,7 @@ public class PdfAgent extends Thread implements Runnable {
                     String fileName =  cal.getTimeInMillis() +"_PdfSSMR.pdf";
                     String filePath = files_deployment_location + "/" + fileName;
                     // Creating the metadata file
-                    BulkImportManifestCreator.createBulkManifest(fileName);
+                    BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location);
                     PdfWriter.getInstance(document, new FileOutputStream(filePath));
                     document.open();
                     addMetaData(document);

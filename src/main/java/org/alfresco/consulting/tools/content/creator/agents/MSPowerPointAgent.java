@@ -75,7 +75,7 @@ public class MSPowerPointAgent extends Thread implements Runnable {
             String fileName =  cal.getTimeInMillis() +"_MSpowerpointSSMR.ppt";
             String filePath = files_deployment_location + "/" + fileName;
             // Creating the metadata file
-            BulkImportManifestCreator.createBulkManifest(fileName);
+            BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location);
             FileOutputStream out = new FileOutputStream(filePath);
             ppt.write(out);
             out.close();
