@@ -19,10 +19,16 @@ public class MSPowerPointAgent extends Thread implements Runnable {
      * @throws java.io.IOException
      */
 
-    private static Properties props = PropertiesLocator.getProperties("super-size-my-repo.properties");
-    private static String files_deployment_location = props.getProperty("files_deployment_location");
-    private static String images_location = props.getProperty("images_location");
-    public void run()
+    private static String files_deployment_location;
+    private static String images_location;
+
+    public MSPowerPointAgent(String _files_deployment_location, String _images_location) {
+        this.files_deployment_location = _files_deployment_location;
+        this.images_location = _images_location;
+      }
+
+
+	public void run()
     {
         RandomWords.init();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

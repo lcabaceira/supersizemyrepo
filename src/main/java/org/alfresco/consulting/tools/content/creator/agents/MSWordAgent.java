@@ -20,9 +20,13 @@ public class MSWordAgent extends Thread implements Runnable {
      * @throws IOException
      */
 
-    private static Properties props = PropertiesLocator.getProperties("super-size-my-repo.properties");
-    private static String files_deployment_location = props.getProperty("files_deployment_location");
-    private static String images_location = props.getProperty("images_location");
+    private static String files_deployment_location;
+    private static String images_location;
+
+    public MSWordAgent(String _files_deployment_location, String _images_location) {
+        this.files_deployment_location = _files_deployment_location;
+        this.images_location = _images_location;
+    }
 
     public void run(){
 

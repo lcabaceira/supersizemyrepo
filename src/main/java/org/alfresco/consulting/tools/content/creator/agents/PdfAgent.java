@@ -17,6 +17,7 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+
 import org.alfresco.consulting.locator.PropertiesLocator;
 import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
 import org.alfresco.consulting.words.RandomWords;
@@ -24,10 +25,17 @@ import org.alfresco.consulting.words.RandomWords;
 
 public class PdfAgent extends Thread implements Runnable {
 
-    private static Properties props = PropertiesLocator.getProperties("super-size-my-repo.properties");
-    private static String files_deployment_location = props.getProperty("files_deployment_location");
-    private static String images_location = props.getProperty("images_location");
-    private static String num_pdfThreads = props.getProperty("num_Threads");
+    private static String num_pdfThreads; 
+    private static String files_deployment_location;
+    private static String images_location;
+
+    public PdfAgent(String _files_deployment_location, String _images_location, String _numThreads) {
+        this.files_deployment_location = _files_deployment_location;
+        this.images_location = _images_location;
+        this.num_pdfThreads = _numThreads;
+      }
+    
+    
     private static Font catFont = new Font(Font.FontFamily.HELVETICA, 18,Font.BOLD);
     private static Font redFont = new Font(Font.FontFamily.HELVETICA, 12,Font.NORMAL, BaseColor.RED);
     private static Font subFont = new Font(Font.FontFamily.HELVETICA, 16,Font.BOLD);

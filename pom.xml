@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.alfresco.consulting</groupId>
   <artifactId>super-size-my-repo</artifactId>
-  <version>1.2-SNAPSHOT</version>
+  <version>1.3-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>SuperSizeMyRepo</name>
   <description>Create lots of content for your alfresco repository</description>
