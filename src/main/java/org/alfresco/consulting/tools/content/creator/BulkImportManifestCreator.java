@@ -55,9 +55,13 @@ public class BulkImportManifestCreator
      * @param SSMR_file  name of the file target for meta-data manifest creation
      * @return String execution log
      */
-    public static String createBulkManifest(final String SSMR_file)
+    public static String createBulkManifest(final String SSMR_file, String path)
     {
 
+    	if (path != null || !path.equals("")){
+    		files_deployment_location= path;
+    	}
+    	
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         String date = dateFormat.format(cal.getTime());
@@ -66,6 +70,7 @@ public class BulkImportManifestCreator
         properties.setProperty("aspects", "cm:versionable,cm:dublincore");
         properties.setProperty("cm:title", "Daily Report document : " + date );
         properties.setProperty("cm:description", "");
+        properties.setProperty("cm:created", "Today");
         properties.setProperty("cm:author", "SuperSizeMyRepo");
         properties.setProperty("cm:publisher", "SuperSizeMyRepo");
         properties.setProperty("cm:contributor", "SuperSizeMyRepo");
