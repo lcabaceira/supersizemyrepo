@@ -130,15 +130,30 @@ All of the other properties have running default values.
 
 How to run with maven ?
 -------
-Issue the following maven command to run the project from the root
+Issue the following maven command to generate the targets (executable jar) from the project root.
+
+P.S. - Don't forget to configure your properties file.
 
 <b>mvn clean install</b> <br/>
 
-This will build and run all the modules and it's the easiest way to build the project
+This will build and generate the executable jar on the target directory.
 
+To run this jar, just type java -jar <your_target_jar_name.jar>
 
 Next Steps ?
 -------
-The goal is to execute the in-place-bulk import action to add all the documents and correspondant 
-meta-data to a target Alfresco repository
+After running the tool, you will have lots of documents to import using the Alfresco bulk importer. To perform a in-place import, you need to define the files_deployment_location to a location inside your contentstore.
+
+Now you can execute the in-place-bulk import action to add all the documents and correspondant 
+meta-data to a target Alfresco repository.
+
+The Streaming bulk import url on your alfresco is : http://<servername>:<alfresco_port>/alfresco/service/bulkfsimport 
+
+The in-place bulk import url on your alfresco is  : http://<servername>:<alfresco_port>/alfresco/service/bulkfsimport/inplace 
+
+Check http://wiki.alfresco.com/wiki/Bulk_Importer for more details.
+
+
+
+
 
