@@ -138,7 +138,13 @@ P.S. - Don't forget to configure your properties file.
 
 This will build and generate the executable jar on the target directory.
 
-To run this jar, just type java -jar super-size-my-repo-REPLACE_WITH_SNAPVERSION-jar-with-dependencies.jar
+To run this jar, just type 
+
+```xml
+...
+java -jar super-size-my-repo-<YOUR_VERSION>-SNAPSHOT-jar-with-dependencies.jar
+ ...
+```
 
 Next Steps ?
 -------
