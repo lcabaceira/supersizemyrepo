@@ -38,10 +38,10 @@ public class MainExecutor {
 	   				System.out.println("### " + arg);
 	   			}
 	   
-	   			num_Threads 						= 						args[0];
-	   			threadPoolSize						= 						args[1];
-	   			files_deployment_location 	= 						args[2];
-	   			images_location 					= 						args[3];
+	   			num_Threads 				= 	args[0];
+	   			threadPoolSize				= 	args[1];
+	   			files_deployment_location 	= 	args[2];
+	   			images_location 			= 	args[3];
 	   			
 	   			if (!args[4].equals("true")){
 	   				pdf = false;
@@ -63,8 +63,7 @@ public class MainExecutor {
 	   			System.out.println("### called by UI");
 	   			doWork(num_Threads, threadPoolSize, files_deployment_location, images_location, pdf, ppt, xls, doc, jpg);  
 	   
-   			}
-   else {
+   			} else {
 	  // not called by the UI 
 	   		System.out.println("### not called by UI");
 	   		props = PropertiesLocator.getProperties("super-size-my-repo.properties");
