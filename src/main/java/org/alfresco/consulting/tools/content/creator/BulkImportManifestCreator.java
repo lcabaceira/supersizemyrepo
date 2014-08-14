@@ -91,7 +91,6 @@ public class BulkImportManifestCreator
             properties1.setProperty("aspects", "cm:versionable,cm:dublincore");
             properties1.setProperty("cm:title", "Daily Report document : " + date );
             properties1.setProperty("cm:description", "");
-            properties1.setProperty("cm:created", "Today");
             properties1.setProperty("cm:author", "SuperSizeMyRepo");
             properties1.setProperty("cm:publisher", "SuperSizeMyRepo");
             properties1.setProperty("cm:contributor", "SuperSizeMyRepo");
