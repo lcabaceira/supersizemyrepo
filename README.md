@@ -149,7 +149,8 @@ meta-data to a target Alfresco repository.
 
 The Streaming bulk import url on your alfresco is : <a href="http://localhost:8080/alfresco/service/bulkfsimport">http://localhost:8080/alfresco/service/bulkfsimport</a> 
 
-The in-place bulk import url on your alfresco is  : <a href="http://localhost:8080/alfresco/service/bulkfsimport/inplace>http://localhost:8080/alfresco/service/bulkfsimport/inplace</a> 
+The in-place bulk import url on your alfresco is  : 
+<a href="http://localhost:8080/alfresco/service/bulkfsimport/inplace">http://localhost:8080/alfresco/service/bulkfsimport/inplace</a> 
 
 Note that you may need to adjust localhost and the 8080 port with your server details if you not running alfresco locally or you're not running alfresco on the default 8080 port.
 
