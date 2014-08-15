@@ -138,6 +138,10 @@ java -jar super-size-my-repo-<YOUR_VERSION>-SNAPSHOT-jar-with-dependencies.jar
 
 Running with the UI ?
 -------
+
+![Screenshot of User Interface Version](https://github.com/lcabaceira/supersizemyrepo/blob/master/images/ui.png)
+
+
 If you wish to run the tool without having to build it and you want to use the nice UI (many thanks to Alex Strachan), just pick up one the jars available in the folder uiJars and run them with java -jar.
 
 <b>Note for MacOs users</b> : If you are using MAC you need to run the jar as follows:
