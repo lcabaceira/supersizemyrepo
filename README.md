@@ -136,6 +136,17 @@ java -jar super-size-my-repo-<YOUR_VERSION>-SNAPSHOT-jar-with-dependencies.jar
  ...
 ```
 
+Running with the UI ?
+-------
+If you wish to run the tool without having to build it and you want to use the nice UI (many thanks to Alex Strachan), just pick up one the jars available in the folder uiJars and run them with java -jar.
+
+<b>Note for MacOs users</b> : If you are using MAC you need to run the jar as follows:
+```xml
+...
+java -XstartOnFirstThread -jar ./ssmr-ui-0.0.2-osx-20140813.193121-1-jar-with-dependencies.jar
+ ...
+
+
 Next Steps ?
 -------
 After running the tool, you will have lots of documents to import using the Alfresco bulk importer. To perform a in-place import, you need to define the files_deployment_location to a location inside your contentstore.
