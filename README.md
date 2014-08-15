@@ -124,8 +124,8 @@ This configuration file contains the following pre-explanatory properties.
  ...
 ```
 
-The only property that is mandatory to adjust is the files_deployment_location,
-All of the other properties have running default values.
+The only 2 properties that are mandatory to adjust are files_deployment_location and images_location
+All of the other properties have default running values.
 
 
 How to run with maven ?
