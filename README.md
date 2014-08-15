@@ -73,11 +73,6 @@ Section from configuration settings.xml
             <password>YOUR_PASSWORD</password>
         </server>
         
-        <server>
-            <id>workdesk-internal</id>
-            <username>YOUR_USERNAME</username>
-            <password>YOUR_PASSWORD</password>
-        </server> 
  ...
 ```
 
@@ -93,11 +88,6 @@ Section from the root pom.xml maven build file
             <id>alfresco-private-snapshots</id>
             <url>https://artifacts.alfresco.com/nexus/content/groups/private-snapshots</url>
         </repository>
-        
-         <repository>
-            <id>workdesk-internal</id>
-            <url>https://artifacts.alfresco.com/nexus/content/groups/workdesk/</url>
-        </repository> 
  ...
 ```
 
