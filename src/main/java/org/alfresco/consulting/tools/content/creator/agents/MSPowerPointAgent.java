@@ -66,7 +66,7 @@ public class MSPowerPointAgent extends Thread implements Runnable {
         int total_deployment_size = deploymentfiles.length;
         Calendar calendar = Calendar.getInstance();
         // checking if the deployment location is full (more than 10 files)
-        if (total_deployment_size>10) {
+        if (total_deployment_size>40) {
             String dir_name = files_deployment_location + "/" + calendar.getTimeInMillis();
             boolean success = (new File(dir_name)).mkdirs();
             this.files_deployment_location = dir_name;
