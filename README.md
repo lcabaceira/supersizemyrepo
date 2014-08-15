@@ -145,6 +145,7 @@ If you wish to run the tool without having to build it and you want to use the n
 ...
 java -XstartOnFirstThread -jar ./ssmr-ui-0.0.2-osx-20140813.193121-1-jar-with-dependencies.jar
  ...
+```
 
 
 Next Steps ?
