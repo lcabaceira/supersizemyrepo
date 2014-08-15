@@ -106,7 +106,7 @@ Section from the root pom.xml maven build file
 Edit the src/main/java/super-size-my-repo.properties and configure your deployment location and the images location.
 
 <b>files_deployment_location</b> : Shoud be a in a place inside your contentStore. This will be the root for the in-place bulkImport.<br/><br/>
-<b>images_location</b> : The tool randomly chooses from a folder of local images to include on the various document types. You need to set the images_location to a folder where you have jpg images. You can use the sample images by pointing the images_location to your <project location>/images.
+<b>images_location</b> : The tool randomly chooses from a folder of local images to include on the various document types. You need to set the images_location to a folder where you have <b>jpg</b> images. You can use the sample images by pointing the images_location to your <project location>/images. The bigger your images are, the bigger your target documents will be. For the sizes of the documents considered we expect jpg images with aprox <b>1.5MB</b>
 
 
 Tool Configuration files and options
