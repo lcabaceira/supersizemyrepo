@@ -81,7 +81,7 @@ public class BulkImportManifestCreator
             e.printStackTrace();
         }
         
-        if (!properties.isEmpty() || properties != null)
+        if (!(properties==null))
         {
         	createMetaDataXmlFile(properties,outStream);
         }

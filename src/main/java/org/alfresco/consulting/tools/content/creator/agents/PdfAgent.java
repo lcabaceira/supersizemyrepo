@@ -53,11 +53,28 @@ public class PdfAgent extends Thread implements Runnable {
 
     public void run()
     {
+
+        File deploymentFolder = new File(files_deployment_location);
+        File[] deploymentfiles =   deploymentFolder.listFiles();
+        int total_deployment_size = deploymentfiles.length;
+        Calendar calendar = Calendar.getInstance();
+        // checking if the deployment location is full (more than 10 files)
+        if (total_deployment_size>10) {
+            String dir_name = files_deployment_location + "/" + calendar.getTimeInMillis();
+            boolean success = (new File(dir_name)).mkdirs();
+            this.files_deployment_location = dir_name;
+            if (!success) {
+                System.out.println("Failed to create directory " + dir_name );
+            }
+            this.files_deployment_location=dir_name;
+        }
+
+
         try
         {
 
                 try {
-                	System.out.println ("#### props size: " + properties.size());
+                	//System.out.println ("#### props size: " + properties.size());
                     RandomWords.init();
                     DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                     Calendar cal = Calendar.getInstance();
@@ -65,8 +82,14 @@ public class PdfAgent extends Thread implements Runnable {
                     File[] files =   imagesFolder.listFiles();
                     int size = files.length;
 
+
+
+
+
                     Document document = new Document();
                     String fileName =  cal.getTimeInMillis() +"_PdfSSMR.pdf";
+
+
                     String filePath = files_deployment_location + "/" + fileName;
                     // Creating the metadata file
                     BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location, properties);

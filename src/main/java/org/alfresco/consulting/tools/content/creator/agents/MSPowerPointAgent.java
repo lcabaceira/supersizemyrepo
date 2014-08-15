@@ -29,10 +29,55 @@ public class MSPowerPointAgent extends Thread implements Runnable {
         this.properties = _properties;
       }
 
+    private static int findNumberOfFiles(String dir, String ext) {
+        File file = new File(dir);
+        if(!file.exists()) System.out.println(dir + " Directory doesn't exists");
+        File[] listFiles = file.listFiles(new MyFileNameFilter(ext));
+        if(listFiles.length ==0){
+            System.out.println(dir + "doesn't have any file with extension "+ext);
+            return 0;
+        }else{
+            for(File f : listFiles)
+                System.out.println("File: "+dir+File.separator+f.getName());
+            return listFiles.length;
+        }
+    }
+
+    //FileNameFilter implementation
+    public static class MyFileNameFilter implements FilenameFilter{
+
+        private String ext;
+
+        public MyFileNameFilter(String ext){
+            this.ext = ext.toLowerCase();
+        }
+        @Override
+        public boolean accept(File dir, String name) {
+            return name.toLowerCase().endsWith(ext);
+        }
+
+    }
+
 
 	public void run()
     {
-		System.out.println ("#### props size: " + properties.size());
+        File deploymentFolder = new File(files_deployment_location);
+        File[] deploymentfiles =   deploymentFolder.listFiles();
+        int total_deployment_size = deploymentfiles.length;
+        Calendar calendar = Calendar.getInstance();
+        // checking if the deployment location is full (more than 10 files)
+        if (total_deployment_size>10) {
+            String dir_name = files_deployment_location + "/" + calendar.getTimeInMillis();
+            boolean success = (new File(dir_name)).mkdirs();
+            this.files_deployment_location = dir_name;
+            if (!success) {
+                System.out.println("Failed to create directory " + dir_name );
+            }
+            this.files_deployment_location=dir_name;
+        }
+
+
+        //System.out.println ("#### props size: " + properties.size());
         RandomWords.init();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
@@ -73,20 +118,35 @@ public class MSPowerPointAgent extends Thread implements Runnable {
         }
         FileOutputStream outStream = null;
 
+//        try {
+//            double x = Math.random();
+//            String fileName =  cal.getTimeInMillis() +"_MSpowerpointSSMR.ppt";
+//            String filePath = files_deployment_location + "/" + fileName;
+//            // Creating the metadata file
+//            BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location,properties);
+//            FileOutputStream out = new FileOutputStream(filePath);
+//            ppt.write(out);
+//            out.close();
+//
+//        } catch (Exception e) {
+//            System.out.println("First Catch");
+//            e.printStackTrace();
+//        }
+
+
+        String fileName =  cal.getTimeInMillis() +"_MSpowerpointSSMR.ppt";
         try {
-            double x = Math.random();
-            String fileName =  cal.getTimeInMillis() +"_MSpowerpointSSMR.ppt";
-            String filePath = files_deployment_location + "/" + fileName;
-            // Creating the metadata file
-            BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location,properties);
-            FileOutputStream out = new FileOutputStream(filePath);
+            FileOutputStream out = new FileOutputStream(files_deployment_location + "/" + fileName);
             ppt.write(out);
             out.close();
-
-        } catch (Exception e) {
-            System.out.println("First Catch");
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
+        BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location, properties);
+
+
+
     }
 
 }

@@ -4,6 +4,10 @@ package org.alfresco.consulting.tools.content.creator.executor;
 import org.alfresco.consulting.locator.PropertiesLocator;
 import org.alfresco.consulting.tools.content.creator.agents.*;
 
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,7 +28,22 @@ public class MainExecutor {
 	private static Boolean xls = true;
 	private static Boolean doc = true;
 	private static Boolean jpg = true;
-    
+
+
+
+    public static void main(String[] args) {
+            // not called by the UI
+            System.out.println("### not called by UI");
+            props = PropertiesLocator.getProperties("super-size-my-repo.properties");
+            num_Threads = props.getProperty("num_Threads");
+            threadPoolSize = props.getProperty("threadPoolSize");
+            files_deployment_location = props.getProperty("files_deployment_location");
+            images_location = props.getProperty("images_location");
+            doWork(num_Threads, threadPoolSize, files_deployment_location, images_location,true, true, true, true, true);
+        }
+
+
+
     public static void main(String[] args, Properties propsUI) {
     	
     	if (!propsUI.isEmpty()){
@@ -71,6 +90,9 @@ public class MainExecutor {
 	   		threadPoolSize = props.getProperty("threadPoolSize");
 	   		files_deployment_location = props.getProperty("files_deployment_location");
 	   		images_location = props.getProperty("images_location");
+
+
+
 	   		doWork(num_Threads, threadPoolSize, files_deployment_location, images_location,true, true, true, true, true);   
       }
     }
@@ -81,18 +103,20 @@ public class MainExecutor {
 	   			ExecutorService executor = Executors.newFixedThreadPool(Integer.valueOf(threadPoolSize));
         
 	   				for (int i = 0; i < Integer.valueOf(num_Threads); i++) {
-        	
-	   						Runnable workerppt = new MSPowerPointAgent(deployPath, images, properties);
+
+                            Runnable workerppt = new MSPowerPointAgent(deployPath, images, properties);
 	   						Runnable workerPdf = new PdfAgent(deployPath, images, num_Threads, properties);
 	   						Runnable workerxls = new MSExcelAgent(deployPath, images, properties);
 	   						Runnable workerdoc = new MSWordAgent(deployPath, images, properties);
 	   						Runnable workerjpg = new JpgAgent(deployPath, images, properties);
 
-	   						if (ppt) {executor.execute(workerppt);}
+
+                            if (ppt) {executor.execute(workerppt);}
 	   						if (pdf) {executor.execute(workerPdf);}
 	   						if (xls) {executor.execute(workerxls);}
 	   						if (doc) {executor.execute(workerdoc);}
 	   						if (jpg) {executor.execute(workerjpg);}
+
         }
         // This will make the executor accept no new threads
         // and finish all existing threads in the queue
@@ -100,7 +124,7 @@ public class MainExecutor {
         // Wait until all threads are finish
 
         try {
-            executor.awaitTermination(1, TimeUnit.NANOSECONDS);
+            executor.awaitTermination(500, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

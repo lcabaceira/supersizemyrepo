@@ -29,6 +29,23 @@ public class JpgAgent extends Thread implements Runnable {
 
     public void run() {
 
+        File deploymentFolder = new File(files_deployment_location);
+        File[] deploymentfiles =   deploymentFolder.listFiles();
+        int total_deployment_size = deploymentfiles.length;
+        Calendar calendar = Calendar.getInstance();
+        // checking if the deployment location is full (more than 10 files)
+        if (total_deployment_size>10) {
+            String dir_name = files_deployment_location + "/" + calendar.getTimeInMillis();
+            boolean success = (new File(dir_name)).mkdirs();
+            this.files_deployment_location = dir_name;
+            if (!success) {
+                System.out.println("Failed to create directory " + dir_name );
+            }
+            this.files_deployment_location=dir_name;
+        }
+
+
+
         RandomWords.init();
         Calendar cal = Calendar.getInstance();
 
