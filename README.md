@@ -82,11 +82,11 @@ Section from the root pom.xml maven build file
 ...
         <repository>
             <id>alfresco-private</id>
-            <url>https://artifacts.alfresco.com/nexus/content/groups/private</url>
+            <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
         </repository>
         <repository>
             <id>alfresco-private-snapshots</id>
-            <url>https://artifacts.alfresco.com/nexus/content/groups/private-snapshots</url>
+            <url>https://artifacts.alfresco.com/nexus/content/groups/public-snapshots</url>
         </repository>
  ...
 ```
