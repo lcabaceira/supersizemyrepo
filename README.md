@@ -63,12 +63,12 @@ Section from configuration settings.xml
 ```xml
 ...
         <server>
-            <id>alfresco-private</id>
+            <id>alfresco-public</id>
             <username>YOUR_USERNAME</username>
             <password>YOUR_PASSWORD</password>
         </server>
         <server>
-            <id>alfresco-private-snapshots</id>
+            <id>alfresco-public-snapshots</id>
             <username>YOUR_USERNAME</username>
             <password>YOUR_PASSWORD</password>
         </server>
@@ -81,11 +81,11 @@ Section from the root pom.xml maven build file
 ```xml
 ...
         <repository>
-            <id>alfresco-private</id>
+            <id>alfresco-public</id>
             <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
         </repository>
         <repository>
-            <id>alfresco-private-snapshots</id>
+            <id>alfresco-public-snapshots</id>
             <url>https://artifacts.alfresco.com/nexus/content/groups/public-snapshots</url>
         </repository>
  ...
