@@ -40,7 +40,6 @@ public class MainExecutor {
             doWorkWithMaxFiles(max_files_per_folder,num_Threads, threadPoolSize, files_deployment_location, images_location,true, true, true, true, true);
         }
 
-
     // called by the UI
     public static void main(String[] args, Properties propsUI) {
     	
