@@ -28,6 +28,7 @@ public class PdfAgent extends Thread implements Runnable {
     private static String num_pdfThreads; 
     private static String files_deployment_location;
     private static String images_location;
+    private static String max_files_per_folder="40";   // defaults to 40, but can be a parameter of the constructor
     private static Properties properties;
 
     public PdfAgent(String _files_deployment_location, String _images_location, String _numThreads, Properties _properties) {
@@ -36,20 +37,21 @@ public class PdfAgent extends Thread implements Runnable {
         this.num_pdfThreads = _numThreads;
         this.properties = _properties;
       }
-    
-    
+
+    public PdfAgent(String _max_files_per_folder, String _files_deployment_location, String _images_location, String _numThreads, Properties _properties) {
+        this.files_deployment_location = _files_deployment_location;
+        this.images_location = _images_location;
+        this.num_pdfThreads = _numThreads;
+        this.properties = _properties;
+        this.max_files_per_folder = _max_files_per_folder;
+    }
+
+
     private static Font catFont = new Font(Font.FontFamily.HELVETICA, 18,Font.BOLD);
     private static Font redFont = new Font(Font.FontFamily.HELVETICA, 12,Font.NORMAL, BaseColor.RED);
     private static Font subFont = new Font(Font.FontFamily.HELVETICA, 16,Font.BOLD);
     private static Font smallBold = new Font(Font.FontFamily.HELVETICA, 12,Font.BOLD);
 
-//    public PdfAgent()
-//    {
-//        super("PdfAgent extending thread");
-//        System.out.println("PdfAgent thread created" + this);
-//        this.setPriority(MAX_PRIORITY);
-//        start();
-//    }
 
     public void run()
     {
@@ -58,8 +60,8 @@ public class PdfAgent extends Thread implements Runnable {
         File[] deploymentfiles =   deploymentFolder.listFiles();
         int total_deployment_size = deploymentfiles.length;
         Calendar calendar = Calendar.getInstance();
-        // checking if the deployment location is full (more than 10 files)
-        if (total_deployment_size>40) {
+        // checking if the deployment location is full (more than max_files_per_folder files)
+        if (total_deployment_size>Integer.valueOf(max_files_per_folder)) {
             String dir_name = files_deployment_location + "/" + calendar.getTimeInMillis();
             boolean success = (new File(dir_name)).mkdirs();
             this.files_deployment_location = dir_name;
@@ -81,15 +83,8 @@ public class PdfAgent extends Thread implements Runnable {
                     File imagesFolder = new File(images_location);
                     File[] files =   imagesFolder.listFiles();
                     int size = files.length;
-
-
-
-
-
                     Document document = new Document();
                     String fileName =  cal.getTimeInMillis() +"_PdfSSMR.pdf";
-
-
                     String filePath = files_deployment_location + "/" + fileName;
                     // Creating the metadata file
                     BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location, properties);
@@ -165,11 +160,9 @@ public class PdfAgent extends Thread implements Runnable {
                     Image localimage12 = Image.getInstance(randomFilePath12);
                     document.add(localimage12);
 
-
-
-                    String imageUrl = "http://lorempixel.com/800/600/sports/Created with SSMR/";
-                    Image image2 = Image.getInstance(new URL(imageUrl));
-                    document.add(image2);
+//                    String imageUrl = "http://lorempixel.com/800/600/sports/Created with SSMR/";
+//                    Image image2 = Image.getInstance(new URL(imageUrl));
+//                    document.add(image2);
 
                     document.close();
                 } catch (Exception e) {

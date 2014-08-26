@@ -17,6 +17,7 @@ public class MSExcelAgent extends Thread implements Runnable {
 
     private static String files_deployment_location;
     private static String images_location;
+    private static String max_files_per_folder="40";   // defaults to 40, but can be a parameter of the constructor
     private static Properties properties;
 
     public MSExcelAgent(String _files_deployment_location, String _images_location, Properties _properties) {
@@ -25,14 +26,22 @@ public class MSExcelAgent extends Thread implements Runnable {
         this.properties = _properties;
       }
 
+    public MSExcelAgent(String _max_files_per_folder,String _files_deployment_location, String _images_location, Properties _properties) {
+        this.files_deployment_location = _files_deployment_location;
+        this.images_location = _images_location;
+        this.properties = _properties;
+        this.max_files_per_folder = _max_files_per_folder;
+    }
+
+
     public void run(){
 
         File deploymentFolder = new File(files_deployment_location);
         File[] deploymentfiles =   deploymentFolder.listFiles();
         int total_deployment_size = deploymentfiles.length;
         Calendar calendar = Calendar.getInstance();
-        // checking if the deployment location is full (more than 10 files)
-        if (total_deployment_size>40) {
+        // checking if the deployment location is full (more than max_files_per_folder files)
+        if (total_deployment_size>Integer.valueOf(max_files_per_folder)) {
             String dir_name = files_deployment_location + "/" + calendar.getTimeInMillis();
             boolean success = (new File(dir_name)).mkdirs();
             this.files_deployment_location = dir_name;
@@ -41,7 +50,6 @@ public class MSExcelAgent extends Thread implements Runnable {
             }
             this.files_deployment_location=dir_name;
         }
-
 
         RandomWords.init();
         /* Create a Workbook and Worksheet */

@@ -21,13 +21,22 @@ public class MSPowerPointAgent extends Thread implements Runnable {
 
     private static String files_deployment_location;
     private static String images_location;
+    private static String max_files_per_folder="40";
     private static Properties properties;
+
+    public MSPowerPointAgent(String _max_files_per_folder, String _files_deployment_location, String _images_location, Properties _properties) {
+        this.files_deployment_location = _files_deployment_location;
+        this.images_location = _images_location;
+        this.properties = _properties;
+        this.max_files_per_folder = _max_files_per_folder;
+      }
 
     public MSPowerPointAgent(String _files_deployment_location, String _images_location, Properties _properties) {
         this.files_deployment_location = _files_deployment_location;
         this.images_location = _images_location;
         this.properties = _properties;
-      }
+    }
+
 
     private static int findNumberOfFiles(String dir, String ext) {
         File file = new File(dir);
@@ -65,8 +74,8 @@ public class MSPowerPointAgent extends Thread implements Runnable {
         File[] deploymentfiles =   deploymentFolder.listFiles();
         int total_deployment_size = deploymentfiles.length;
         Calendar calendar = Calendar.getInstance();
-        // checking if the deployment location is full (more than 10 files)
-        if (total_deployment_size>40) {
+        // checking if the deployment location is full (more than max_files_per_folder files)
+        if (total_deployment_size>Integer.valueOf(max_files_per_folder)) {
             String dir_name = files_deployment_location + "/" + calendar.getTimeInMillis();
             boolean success = (new File(dir_name)).mkdirs();
             this.files_deployment_location = dir_name;
@@ -75,7 +84,6 @@ public class MSPowerPointAgent extends Thread implements Runnable {
             }
             this.files_deployment_location=dir_name;
         }
-
 
         //System.out.println ("#### props size: " + properties.size());
         RandomWords.init();
@@ -117,22 +125,6 @@ public class MSPowerPointAgent extends Thread implements Runnable {
             XSLFPictureShape pic = slide[i].createPicture(idx);
         }
         FileOutputStream outStream = null;
-
-//        try {
-//            double x = Math.random();
-//            String fileName =  cal.getTimeInMillis() +"_MSpowerpointSSMR.ppt";
-//            String filePath = files_deployment_location + "/" + fileName;
-//            // Creating the metadata file
-//            BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location,properties);
-//            FileOutputStream out = new FileOutputStream(filePath);
-//            ppt.write(out);
-//            out.close();
-//
-//        } catch (Exception e) {
-//            System.out.println("First Catch");
-//            e.printStackTrace();
-//        }
-
 
         String fileName =  cal.getTimeInMillis() +"_MSpowerpointSSMR.ppt";
         try {
