@@ -27,7 +27,6 @@ public class MainExecutor {
 	private static Boolean jpg = true;
 
 
-    // --astrachan - not called by the UI 
     public static void main(String[] args) {
  
             System.out.println("### not called by the UI");
@@ -58,22 +57,22 @@ public class MainExecutor {
 	   			files_deployment_location 	= 	args[3];
 	   			images_location 					= 	args[4];
 	   			
-	   			if (!args[4].equals("true")){
+	   			if (!args[5].equals("true")){
 	   				pdf = false;
 	   			}
-	 			if (!args[5].equals("true")){
+	 			if (!args[6].equals("true")){
 	   				ppt = false;
 	   			}
-	 			if (!args[6].equals("true")){
+	 			if (!args[7].equals("true")){
 	   				xls = false;
 	   			}
-	 			if (!args[7].equals("true")){
+	 			if (!args[8].equals("true")){
 	   				doc = false;
 	   			}
-	 			if (!args[8].equals("true")){
+	 			if (!args[9].equals("true")){
 	   				jpg = false;
 	   			}
-	 			System.out.println("### called by UI cakey");
+	 			System.out.println("### called by UI");
 	   			doWorkWithMaxFiles(max_files_per_folder,num_Threads, threadPoolSize, files_deployment_location, images_location, pdf, ppt, xls, doc, jpg);  
    			} 
     }
@@ -85,6 +84,12 @@ public class MainExecutor {
 			System.out.println("### threadPoolSize: " + threadPoolSize);
 			System.out.println("### deployPath: " + deployPath);
 			System.out.println("### images: " + images);
+			
+			System.out.println("### pdf: " + pdf);
+			System.out.println("### ppt: " + ppt);
+			System.out.println("### xls: " + xls);
+			System.out.println("### doc: " + doc);
+			System.out.println("### jpg: " + jpg);
 	
 			ExecutorService executor = Executors.newFixedThreadPool(Integer.valueOf(threadPoolSize));
 
