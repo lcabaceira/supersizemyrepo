@@ -112,6 +112,7 @@ This configuration file contains the following pre-explanatory properties.
        images_location=<DEFAULT_LOCATION_FOR_BASE_IMAGES>
        num_Threads=<NUMBER_OF_THREADS_TO_EXECUTE>
        threadPoolSize=<SIZE_OF_THE_THREAD_POOL>
+       max_files_per_folder=<NUMBER_OF_MAX_FILES_IN_A_SINGLE_FOLDER>
  ...
 ```
 
