@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.alfresco.consulting</groupId>
   <artifactId>super-size-my-repo</artifactId>
-  <version>1.8-SNAPSHOT</version>
+  <version>1.9-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>SuperSizeMyRepo</name>
   <description>Create lots of content for your alfresco repository</description>
@@ -16,8 +16,6 @@
 
   <properties>
     <chemistry.version>0.6.0</chemistry.version>
-      <alfresco.groupId>org.alfresco</alfresco.groupId>
-      <alfresco.version>4.2.b</alfresco.version>
   </properties>
 
 
@@ -70,11 +68,11 @@
 
     <repositories>
         <repository>
-            <id>alfresco-private</id>
+            <id>alfresco-public</id>
             <url>https://artifacts.alfresco.com/nexus/content/groups/private</url>
         </repository>
         <repository>
-            <id>alfresco-private-snapshots</id>
+            <id>alfresco-public-snapshots</id>
             <url>https://artifacts.alfresco.com/nexus/content/groups/private-snapshots</url>
         </repository>
     </repositories>
