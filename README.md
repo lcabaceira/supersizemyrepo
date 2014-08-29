@@ -44,7 +44,8 @@ MS Word Documents (.doc) </li>
 
 Pre-Requirements
 -------
- 
+<b>NOTE :</b>Runing the compiled version (available in the uiJars folder) has no pre-requirements appart from having java installed on your laptop. <br/><br/>
+If you wish to build the tool and use the standalone (properties file based) version you will need the following:
 
 <b>1 - Software requirements</b><br/>
 <ul>
