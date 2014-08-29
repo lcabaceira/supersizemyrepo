@@ -4,6 +4,8 @@ package org.alfresco.consulting.tools.content.creator.executor;
 import org.alfresco.consulting.locator.PropertiesLocator;
 import org.alfresco.consulting.tools.content.creator.agents.*;
 
+import java.io.File;
+import java.util.Calendar;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,6 +39,7 @@ public class MainExecutor {
             images_location = props.getProperty("images_location");
             max_files_per_folder = props.getProperty("max_files_per_folder");
   
+            //doWorkWithMaxFiles(max_files_per_folder,num_Threads, threadPoolSize, files_deployment_location, images_location,true, true, true, true, true);
             doWorkWithMaxFiles(max_files_per_folder,num_Threads, threadPoolSize, files_deployment_location, images_location,true, true, true, true, true);
         }
 
@@ -94,11 +97,11 @@ public class MainExecutor {
 
 			for (int i = 0; i < Integer.valueOf(num_Threads); i++) {
 
-            Runnable workerppt = new MSPowerPointAgent(maxFiles,deployPath, images, properties);
-            Runnable workerPdf = new PdfAgent(maxFiles,deployPath, images, num_Threads, properties);
-            Runnable workerxls = new MSExcelAgent(maxFiles,deployPath, images, properties);
-            Runnable workerdoc = new MSWordAgent(maxFiles,deployPath, images, properties);
-            Runnable workerjpg = new JpgAgent(maxFiles,deployPath, images, properties);
+                Runnable workerppt = new MSPowerPointAgent(maxFiles,deployPath, images, properties);
+                Runnable workerPdf = new PdfAgent(maxFiles,deployPath, images, num_Threads, properties);
+                Runnable workerxls = new MSExcelAgent(maxFiles,deployPath, images, properties);
+                Runnable workerdoc = new MSWordAgent(maxFiles,deployPath, images, properties);
+                Runnable workerjpg = new JpgAgent(maxFiles,deployPath, images, properties);
 
 
             if (ppt) {executor.execute(workerppt);}

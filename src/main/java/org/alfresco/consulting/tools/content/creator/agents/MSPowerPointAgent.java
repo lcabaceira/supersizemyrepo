@@ -25,7 +25,10 @@ public class MSPowerPointAgent extends Thread implements Runnable {
     private static Properties properties;
 
     public MSPowerPointAgent(String _max_files_per_folder, String _files_deployment_location, String _images_location, Properties _properties) {
+
         this.files_deployment_location = _files_deployment_location;
+
+
         this.images_location = _images_location;
         this.properties = _properties;
         this.max_files_per_folder = _max_files_per_folder;
@@ -70,20 +73,7 @@ public class MSPowerPointAgent extends Thread implements Runnable {
 
 	public void run()
     {
-        File deploymentFolder = new File(files_deployment_location);
-        File[] deploymentfiles =   deploymentFolder.listFiles();
-        int total_deployment_size = deploymentfiles.length;
-        Calendar calendar = Calendar.getInstance();
-        // checking if the deployment location is full (more than max_files_per_folder files)
-        if (total_deployment_size>Integer.valueOf(max_files_per_folder)) {
-            String dir_name = files_deployment_location + "/" + calendar.getTimeInMillis();
-            boolean success = (new File(dir_name)).mkdirs();
-            this.files_deployment_location = dir_name;
-            if (!success) {
-                System.out.println("Failed to create directory " + dir_name );
-            }
-            this.files_deployment_location=dir_name;
-        }
+
 
         //System.out.println ("#### props size: " + properties.size());
         RandomWords.init();
@@ -127,15 +117,37 @@ public class MSPowerPointAgent extends Thread implements Runnable {
         FileOutputStream outStream = null;
 
         String fileName =  cal.getTimeInMillis() +"_MSpowerpointSSMR.ppt";
+
         try {
-            FileOutputStream out = new FileOutputStream(files_deployment_location + "/" + fileName);
+            File deploymentFolder = new File(files_deployment_location);
+            File[] deploymentfiles =   deploymentFolder.listFiles();
+            int total_deployment_size = deploymentfiles.length;
+            Calendar calendar = Calendar.getInstance();
+            FileOutputStream out = null;
+            // checking if the deployment location is full (more than max_files_per_folder files)
+            if (total_deployment_size>Integer.valueOf(max_files_per_folder)) {
+                String dir_name = files_deployment_location + "/" + calendar.getTimeInMillis();
+                boolean success = (new File(dir_name)).mkdirs();
+                this.files_deployment_location = dir_name;
+                if (!success) {
+                    System.out.println("Failed to create directory " + dir_name );
+                }
+                this.files_deployment_location=dir_name;
+                 out = new FileOutputStream(files_deployment_location + "/" + fileName);
+                 BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location, properties);
+            } else {
+                out = new FileOutputStream(files_deployment_location + "/" + fileName);
+                BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location, properties);
+            }
+
+
             ppt.write(out);
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location, properties);
+
 
 
 

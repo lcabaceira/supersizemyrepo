@@ -71,20 +71,6 @@ public class MSWordAgent extends Thread implements Runnable {
     public void run(){
 
 
-        File deploymentFolder = new File(files_deployment_location);
-        File[] deploymentfiles =   deploymentFolder.listFiles();
-        int total_deployment_size = deploymentfiles.length;
-        Calendar calendar = Calendar.getInstance();
-        // checking if the deployment location is full (more than max_files_per_folder files)
-        if (total_deployment_size>Integer.valueOf(max_files_per_folder)) {
-            String dir_name = files_deployment_location + "/" + calendar.getTimeInMillis();
-            boolean success = (new File(dir_name)).mkdirs();
-            this.files_deployment_location = dir_name;
-            if (!success) {
-                System.out.println("Failed to create directory " + dir_name );
-            }
-            this.files_deployment_location=dir_name;
-        }
 
 
         RandomWords.init();
@@ -218,23 +204,35 @@ public class MSWordAgent extends Thread implements Runnable {
 //        }  catch (IOException e) {
 //            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 //        }
-
         FileOutputStream outStream = null;
-
         try {
-            double x = Math.random();
+
             String fileName =  cal.getTimeInMillis() +"_MSWordSSMR.docx";
-            String filePath = files_deployment_location + "/" + fileName;
+            File deploymentFolder = new File(files_deployment_location);
+            File[] deploymentfiles =   deploymentFolder.listFiles();
+            int total_deployment_size = deploymentfiles.length;
+            Calendar calendar = Calendar.getInstance();
+            FileOutputStream out = null;
+            // checking if the deployment location is full (more than max_files_per_folder files)
+            if (total_deployment_size>Integer.valueOf(max_files_per_folder)) {
+                String dir_name = files_deployment_location + "/" + calendar.getTimeInMillis();
+                boolean success = (new File(dir_name)).mkdirs();
+                this.files_deployment_location = dir_name;
+                if (!success) {
+                    System.out.println("Failed to create directory " + dir_name );
+                }
+                this.files_deployment_location=dir_name;
+                outStream = new FileOutputStream(files_deployment_location + "/" + fileName);
+                BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location, properties);
+            } else {
+                outStream = new FileOutputStream(files_deployment_location + "/" + fileName);
+                BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location, properties);
 
-            BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location, properties);
-            outStream = new FileOutputStream(filePath);
-
-
-
-        } catch (Exception e) {
-            System.out.println("First Catch");
-            e.printStackTrace();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+
         try {
             document.write(outStream);
             outStream.close();
@@ -245,6 +243,9 @@ public class MSWordAgent extends Thread implements Runnable {
             System.out.println("Third Catch");
             e.printStackTrace();
         }
+
+
+
 
     }
 
