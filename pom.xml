@@ -26,13 +26,13 @@
     <dependency>
         <groupId>org.apache.poi</groupId>
         <artifactId>poi</artifactId>
-        <version>3.10-beta2-20130720</version>
+        <version>3.10.1</version>
     </dependency>
 
     <dependency>
         <groupId>org.apache.poi</groupId>
         <artifactId>poi-scratchpad</artifactId>
-        <version>3.10-beta2-20130720</version>
+        <version>3.10.1</version>
     </dependency>
 
     <dependency>
@@ -44,13 +44,13 @@
     <dependency>
         <groupId>org.apache.poi</groupId>
         <artifactId>poi-ooxml</artifactId>
-        <version>3.10-beta2-20130720</version>
+        <version>3.10.1</version>
     </dependency>
 
     <dependency>
         <groupId>org.apache.poi</groupId>
         <artifactId>poi-ooxml-schemas</artifactId>
-        <version>3.10-beta2-20130720</version>
+        <version>3.10.1</version>
     </dependency>
 
 </dependencies>
@@ -75,6 +75,16 @@
             <id>alfresco-public-snapshots</id>
             <url>https://artifacts.alfresco.com/nexus/content/groups/private-snapshots</url>
         </repository>
+		<repository>
+			<id>com.springsource.repository.bundles.release</id>
+			<name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
+			<url>http://repository.springsource.com/maven/bundles/release</url>
+		</repository>
+		<repository>
+			<id>com.springsource.repository.bundles.external</id>
+			<name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+			<url>http://repository.springsource.com/maven/bundles/external</url>
+		</repository>
     </repositories>
 
 
