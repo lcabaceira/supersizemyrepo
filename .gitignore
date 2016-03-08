@@ -12,3 +12,6 @@ target
 libs
 **/ui
 ui
+.settings/
+.project
+.classpath

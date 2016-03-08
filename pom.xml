@@ -1,138 +1,152 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.alfresco.consulting</groupId>
-  <artifactId>super-size-my-repo</artifactId>
-  <version>1.10-SNAPSHOT</version>
-  <packaging>jar</packaging>
-  <name>SuperSizeMyRepo</name>
-  <description>Create lots of content for your alfresco repository</description>
-  
- <scm>
-      <connection>scm:git:git@github.com:lcabaceira/supersizemyrepo.git</connection>
-      <url>scm:git:git@github.com:lcabaceira/supersizemyrepo.git</url>
-      <developerConnection>scm:git:git@github.com:lcabaceira/supersizemyrepo.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.alfresco.consulting</groupId>
+	<artifactId>super-size-my-repo</artifactId>
+	<version>1.10-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<name>SuperSizeMyRepo</name>
+	<description>Create lots of content for your alfresco repository</description>
 
-  <properties>
-    <chemistry.version>0.6.0</chemistry.version>
-  </properties>
+	<scm>
+		<connection>scm:git:git@github.com:lcabaceira/supersizemyrepo.git</connection>
+		<url>scm:git:git@github.com:lcabaceira/supersizemyrepo.git</url>
+		<developerConnection>scm:git:git@github.com:lcabaceira/supersizemyrepo.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
 
-
-
-  
-<dependencies>
-
-    <dependency>
-        <groupId>org.apache.poi</groupId>
-        <artifactId>poi</artifactId>
-        <version>3.10-beta2-20130720</version>
-    </dependency>
-
-    <dependency>
-        <groupId>org.apache.poi</groupId>
-        <artifactId>poi-scratchpad</artifactId>
-        <version>3.10-beta2-20130720</version>
-    </dependency>
-
-    <dependency>
-        <groupId>com.lowagie.text</groupId>
-        <artifactId>com.springsource.com.lowagie.text</artifactId>
-        <version>5.4.0</version>
-    </dependency>
-
-    <dependency>
-        <groupId>org.apache.poi</groupId>
-        <artifactId>poi-ooxml</artifactId>
-        <version>3.10-beta2-20130720</version>
-    </dependency>
-
-    <dependency>
-        <groupId>org.apache.poi</groupId>
-        <artifactId>poi-ooxml-schemas</artifactId>
-        <version>3.10-beta2-20130720</version>
-    </dependency>
-
-</dependencies>
-
-<distributionManagement>
-        <repository>
-          <id>cloudbees-private-release-repository</id>
-          <url>dav:https://repository-lcabacei.forge.cloudbees.com/supersizemyrepo</url>
-        </repository>
-        <snapshotRepository>
-          <id>cloudbees-private-snapshot-repository</id>
-          <url>dav:https://repository-lcabacei.forge.cloudbees.com/supersizemyrepo</url>
-        </snapshotRepository>
-</distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>alfresco-public</id>
-            <url>https://artifacts.alfresco.com/nexus/content/groups/private</url>
-        </repository>
-        <repository>
-            <id>alfresco-public-snapshots</id>
-            <url>https://artifacts.alfresco.com/nexus/content/groups/private-snapshots</url>
-        </repository>
-    </repositories>
+	<properties>
+		<chemistry.version>0.6.0</chemistry.version>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+	</properties>
 
 
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.10.1</version>
+		</dependency>
 
-<build>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-scratchpad</artifactId>
+			<version>3.10.1</version>
+		</dependency>
 
-    <resources>
-        <resource>
-            <directory>src/main/java</directory>
-            <includes>
-                <include>**/*.properties</include>
-                <include>**/*.txt</include>
-            </includes>
-        </resource>
-    </resources>
+		<dependency>
+			<groupId>com.lowagie.text</groupId>
+			<artifactId>com.springsource.com.lowagie.text</artifactId>
+			<version>5.4.0</version>
+		</dependency>
 
-<plugins>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.10.1</version>
+		</dependency>
 
-<plugin>
-    <artifactId>maven-assembly-plugin</artifactId>
-    <version>2.4</version>
-    <configuration>
-        <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-        </descriptorRefs>
-        <archive>
-            <manifest>
-                 <mainClass>org.alfresco.consulting.tools.content.creator.executor.MainExecutor</mainClass>
-            </manifest>
-    </archive>
-</configuration>
-<executions>
-    <execution>
-        <id>create-executable-jar</id>
-        <phase>package</phase>
-        <goals>
-            <goal>single</goal>
-        </goals>
-    </execution>
-</executions>
-</plugin>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml-schemas</artifactId>
+			<version>3.10.1</version>
+		</dependency>
 
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-release-plugin</artifactId>
-    <version>2.4.2</version>
-</plugin>
-</plugins>
+	</dependencies>
 
-<extensions>
-            <!-- Extension required to deploy a snapshot or a release to the CloudBees remote maven repository using Webdav -->
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-webdav</artifactId>
-                <version>1.0-beta-2</version>
-            </extension>
-        </extensions>
-        
-</build>
+	<distributionManagement>
+		<repository>
+			<id>cloudbees-private-release-repository</id>
+			<url>dav:https://repository-lcabacei.forge.cloudbees.com/supersizemyrepo</url>
+		</repository>
+		<snapshotRepository>
+			<id>cloudbees-private-snapshot-repository</id>
+			<url>dav:https://repository-lcabacei.forge.cloudbees.com/supersizemyrepo</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>alfresco-public</id>
+			<url>https://artifacts.alfresco.com/nexus/content/groups/private</url>
+		</repository>
+		<repository>
+			<id>alfresco-public-snapshots</id>
+			<url>https://artifacts.alfresco.com/nexus/content/groups/private-snapshots</url>
+		</repository>
+		<repository>
+			<id>com.springsource.repository.bundles.release</id>
+			<name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
+			<url>http://repository.springsource.com/maven/bundles/release</url>
+		</repository>
+		<repository>
+			<id>com.springsource.repository.bundles.external</id>
+			<name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
+			<url>http://repository.springsource.com/maven/bundles/external</url>
+		</repository>
+	</repositories>
+
+
+
+	<build>
+
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.txt</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<plugins>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>org.alfresco.consulting.tools.content.creator.executor.MainExecutor</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>create-executable-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.4.2</version>
+			</plugin>
+
+
+
+		</plugins>
+
+		<extensions>
+			<!-- Extension required to deploy a snapshot or a release to the CloudBees 
+				remote maven repository using Webdav -->
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav</artifactId>
+				<version>1.0-beta-2</version>
+			</extension>
+		</extensions>
+
+	</build>
 
 </project>
