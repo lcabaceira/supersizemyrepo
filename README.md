@@ -158,7 +158,7 @@ Next Steps ?
 -------
 After running the tool, you will have lots of documents to import using the Alfresco bulk importer. To perform a in-place import, you need to define the files_deployment_location to a location inside your contentstore.
 
-Now you can execute the in-place-bulk import action to add all the documents and correspondant 
+Now you can execute the in-place-bulk import action to add all the documents and correspondent 
 meta-data to a target Alfresco repository.
 
 The Streaming bulk import url on your alfresco is : <a href="http://localhost:8080/alfresco/service/bulkfsimport">http://localhost:8080/alfresco/service/bulkfsimport</a> 
