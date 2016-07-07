@@ -9,6 +9,8 @@ import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
 import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
 import org.alfresco.consulting.words.RandomWords;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,6 +19,8 @@ import java.util.Properties;
 
 
 public class PdfAgent extends Thread implements Runnable {
+    private static final Log logger = LogFactory.getLog(PdfAgent.class);
+
     private static Properties properties;
     private final Boolean createSmallFiles;
 
@@ -115,10 +119,10 @@ public class PdfAgent extends Thread implements Runnable {
 
             document.close();
         } catch (Exception e) {
-            System.out.println("Exception" + e.getMessage());
+            logger.error("Unable to create PDF document", e);
         }
 
-        CompletionService.registerCompletion();
+        CompletionTracker.registerCompletion();
     }
 
     // iText allows to add metadata to the PDF which can be viewed in your Adobe Reader under File -> Properties

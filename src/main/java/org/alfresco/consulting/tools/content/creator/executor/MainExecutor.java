@@ -6,6 +6,8 @@ import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
 import org.alfresco.consulting.tools.content.creator.agents.*;
 import org.alfresco.consulting.words.RandomWords;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -13,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class MainExecutor {
+    private static final Log logger = LogFactory.getLog(MainExecutor.class);
 
     private static String threadPoolSize;
     private static String num_Threads;
@@ -30,7 +33,7 @@ public class MainExecutor {
 
     public static void main(String[] args) {
 
-        System.out.println("### not called by the UI");
+        logger.info("### not called by the UI");
         Properties props = PropertiesLocator.getProperties("super-size-my-repo.properties");
         num_Threads = props.getProperty("num_Threads");
         threadPoolSize = props.getProperty("threadPoolSize");
@@ -87,7 +90,7 @@ public class MainExecutor {
             if (!args[9].equals("true")) {
                 jpg = false;
             }
-            System.out.println("### called by UI");
+            logger.info("### called by UI");
             doWorkWithMaxFiles(max_files_per_folder, num_Threads, threadPoolSize, files_deployment_location, images_location, pdf, ppt, xls, doc, jpg, false);
         }
     }
@@ -102,17 +105,17 @@ public class MainExecutor {
 
         RandomWords.init();
 
-        System.out.println("### maxFiles: " + maxFiles);
-        System.out.println("### num_Threads: " + num_Threads);
-        System.out.println("### threadPoolSize: " + threadPoolSize);
-        System.out.println("### deployPath: " + deployPath);
-        System.out.println("### images: " + images);
+        logger.info("### maxFiles: " + maxFiles);
+        logger.info("### num_Threads: " + num_Threads);
+        logger.info("### threadPoolSize: " + threadPoolSize);
+        logger.info("### deployPath: " + deployPath);
+        logger.info("### images: " + images);
 
-        System.out.println("### pdf: " + pdf);
-        System.out.println("### ppt: " + ppt);
-        System.out.println("### xls: " + xls);
-        System.out.println("### doc: " + doc);
-        System.out.println("### jpg: " + jpg);
+        logger.info("### pdf: " + pdf);
+        logger.info("### ppt: " + ppt);
+        logger.info("### xls: " + xls);
+        logger.info("### doc: " + doc);
+        logger.info("### jpg: " + jpg);
 
         ExecutorService executor = Executors.newFixedThreadPool(Integer.valueOf(threadPoolSize));
         int totalExecutions = 0;
@@ -148,16 +151,17 @@ public class MainExecutor {
         try {
             while (!executor.isTerminated()) {
                 executor.awaitTermination(5000, TimeUnit.MILLISECONDS);
-                System.out.println("Completed " + CompletionService.getNumberOfCompletions() + " of " + totalExecutions);
+                logger.info("Completed " + CompletionTracker.getNumberOfCompletions() + " of " + totalExecutions);
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error("Error executing threads.", e);
         }
-        System.out.println("Finished all threads");
+
+        logger.info("Finished all threads");
         final long endTime = System.currentTimeMillis();
 
         final long duration = endTime - startTime;
-        System.out.println("Total duration is " + duration + " milliseconds.");
-        System.out.println("Average time per document is " + duration/totalExecutions + " milliseconds.");
+        logger.info("Total duration is " + duration + " milliseconds.");
+        logger.info("Average time per document is " + duration/totalExecutions + " milliseconds.");
     }
 }

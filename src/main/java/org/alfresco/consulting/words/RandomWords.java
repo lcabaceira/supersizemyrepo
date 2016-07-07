@@ -1,6 +1,8 @@
 package org.alfresco.consulting.words;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +18,8 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author AHunt
  */
 public class RandomWords {
+    private static Log logger = LogFactory.getLog(RandomWords.class);
+
     private static boolean initialized = false;
     private static int maxWordsInMemory = 300000;
     private static String wordFileName = "words.txt";
@@ -68,23 +72,21 @@ public class RandomWords {
         return wordFileName;
     }
 
-
     private static ArrayList<String> readWordsFromFile(int maxNumWords) {
-        int wordsRead = 0;
-        ArrayList<String> words = new ArrayList<String>();
+        ArrayList<String> words = new ArrayList<>(maxNumWords);
         try {
             InputStreamReader isr = new InputStreamReader(RandomWords.class.getResourceAsStream(wordFileName));
             BufferedReader br = new BufferedReader(isr);
             String tmp;
             tmp = br.readLine(); // read first line of file.
 
-            while ((tmp != null) && (wordsRead <= maxNumWords)) {
+            while ((tmp != null) && ((words.size() + 1) < maxNumWords)) {
                 words.add(tmp);
                 tmp = br.readLine();
             }
             br.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Unable to read words file", e);
         }
 
         return words;

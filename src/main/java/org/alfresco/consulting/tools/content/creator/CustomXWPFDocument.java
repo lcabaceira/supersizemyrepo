@@ -1,5 +1,7 @@
 package org.alfresco.consulting.tools.content.creator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlToken;
@@ -10,20 +12,18 @@ import org.openxmlformats.schemas.drawingml.x2006.wordprocessingDrawing.CTInline
 import java.io.IOException;
 import java.io.InputStream;
 
-public class CustomXWPFDocument extends XWPFDocument
-{
-    public CustomXWPFDocument(InputStream in) throws IOException
-    {
+public class CustomXWPFDocument extends XWPFDocument {
+    private static final Log logger = LogFactory.getLog(CustomXWPFDocument.class);
+
+    public CustomXWPFDocument(InputStream in) throws IOException {
         super(in);
     }
 
-    public CustomXWPFDocument() throws IOException
-    {
+    public CustomXWPFDocument() throws IOException {
         super();
     }
 
-    public void createPicture(String blipId,int id, int width, int height)
-    {
+    public void createPicture(String blipId, int id, int width, int height) {
         final int EMU = 9525;
         width *= EMU;
         height *= EMU;
@@ -61,14 +61,12 @@ public class CustomXWPFDocument extends XWPFDocument
 
         //CTGraphicalObjectData graphicData = inline.addNewGraphic().addNewGraphicData();
         XmlToken xmlToken = null;
-        try
-        {
+        try {
             xmlToken = XmlToken.Factory.parse(picXml);
+        } catch (XmlException xe) {
+            logger.error("Unable to parse XML: " + picXml, xe);
         }
-        catch(XmlException xe)
-        {
-            xe.printStackTrace();
-        }
+
         inline.set(xmlToken);
         //graphicData.set(xmlToken);
 

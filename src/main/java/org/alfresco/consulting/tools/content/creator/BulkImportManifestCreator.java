@@ -1,6 +1,8 @@
 package org.alfresco.consulting.tools.content.creator;
 
 import org.alfresco.consulting.locator.PropertiesLocator;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,6 +15,8 @@ import java.util.Calendar;
 import java.util.Properties;
 
 public class BulkImportManifestCreator {
+    private static final Log logger = LogFactory.getLog(BulkImportManifestCreator.class);
+
     private static Properties props = PropertiesLocator.getProperties("super-size-my-repo.properties");
     private static String files_deployment_location = props.getProperty("files_deployment_location");
     private static Properties properties1 = new Properties();
@@ -71,7 +75,7 @@ public class BulkImportManifestCreator {
         try {
             outStream = new FileOutputStream(metaDatafilePath);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            logger.error("Unable to save metadata file: " + metaDatafileName, e);
         }
 
         if (!(properties == null)) {

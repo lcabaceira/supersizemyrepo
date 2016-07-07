@@ -1,7 +1,12 @@
 package org.alfresco.consulting.tools.content.creator;
 
-import java.io.File;
-import java.util.Properties;
+import org.alfresco.consulting.locator.PropertiesLocator;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -10,19 +15,17 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.alfresco.consulting.locator.PropertiesLocator;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.io.File;
+import java.util.Properties;
 
 public class WriteXMLFile {
+    private static final Log logger = LogFactory.getLog(WriteXMLFile.class);
+
     private static Properties props = PropertiesLocator.getProperties("super-size-my-repo.properties");
     private static String files_deployment_location = props.getProperty("files_deployment_location");
+
     public static void main(String argv[]) {
-
         try {
-
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
@@ -70,17 +73,11 @@ public class WriteXMLFile {
             DOMSource source = new DOMSource(doc);
             StreamResult result = new StreamResult(new File(files_deployment_location + "/file.xml"));
 
-            // Output to console for testing
-            // StreamResult result = new StreamResult(System.out);
-
             transformer.transform(source, result);
 
-            System.out.println("File saved!");
-
-        } catch (ParserConfigurationException pce) {
-            pce.printStackTrace();
-        } catch (TransformerException tfe) {
-            tfe.printStackTrace();
+            logger.debug("File saved!");
+        } catch (ParserConfigurationException | TransformerException e) {
+            logger.error("Unable to write XML file", e);
         }
     }
 }

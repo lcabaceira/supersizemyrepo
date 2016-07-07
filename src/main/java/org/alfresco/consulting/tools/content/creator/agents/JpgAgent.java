@@ -4,12 +4,15 @@ import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
 import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
 import org.alfresco.consulting.words.RandomWords;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.util.IOUtils;
 
 import java.io.*;
 import java.util.Properties;
 
 public class JpgAgent extends Thread implements Runnable {
+    private static final Log logger = LogFactory.getLog(JpgAgent.class);
     private static Properties properties;
 
     public JpgAgent(Properties _properties) {
@@ -30,14 +33,12 @@ public class JpgAgent extends Thread implements Runnable {
                 out.close();
                 is.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Unable to copy image.", e);
             }
-
         } catch (Exception e) {
-            System.out.println("First Catch");
-            e.printStackTrace();
+            logger.error("First catch", e);
         }
 
-        CompletionService.registerCompletion();
+        CompletionTracker.registerCompletion();
     }
 }

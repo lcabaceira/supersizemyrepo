@@ -4,6 +4,8 @@ import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
 import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
 import org.alfresco.consulting.words.RandomWords;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xslf.usermodel.*;
 
@@ -14,6 +16,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class MSPowerPointAgent extends Thread implements Runnable {
+    private static final Log logger = LogFactory.getLog(MSPowerPointAgent.class);
+
     private static Properties properties;
     private final Boolean createSmallFiles;
 
@@ -52,7 +56,7 @@ public class MSPowerPointAgent extends Thread implements Runnable {
                 try {
                     pictureData = IOUtils.toByteArray(new FileInputStream(randomImage));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error("Unable to get bytes of " + randomImage, e);
                 }
                 int idx = ppt.addPicture(pictureData, XSLFPictureData.PICTURE_TYPE_PNG);
                 slide[i].createPicture(idx);
@@ -68,10 +72,10 @@ public class MSPowerPointAgent extends Thread implements Runnable {
             ppt.write(out);
             out.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Unable to save PowerPoint document: " + fileName, e);
         }
 
-        CompletionService.registerCompletion();
+        CompletionTracker.registerCompletion();
     }
 
 }

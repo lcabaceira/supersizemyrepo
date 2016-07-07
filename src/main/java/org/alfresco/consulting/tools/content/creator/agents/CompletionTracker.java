@@ -1,24 +1,22 @@
 package org.alfresco.consulting.tools.content.creator.agents;
 
-public class CompletionService {
-    private static final CompletionService INSTANCE = new CompletionService();
+public class CompletionTracker {
+    private static final CompletionTracker INSTANCE = new CompletionTracker();
     private int completionCount = 0;
 
-    private CompletionService() {}
+    private CompletionTracker() {}
 
     static void registerCompletion() {
         INSTANCE.incrementCompletionCount();
     }
 
     public static int getNumberOfCompletions() {
-        return INSTANCE.getCompletionCount();
+        return INSTANCE.completionCount;
     }
 
+    // ensure this method is not inlined for two reasons: 1) for readability and 2) it is synchronized on updating the
+    // count
     private synchronized void incrementCompletionCount() {
         completionCount++;
-    }
-
-    private synchronized int getCompletionCount() {
-        return completionCount;
     }
 }

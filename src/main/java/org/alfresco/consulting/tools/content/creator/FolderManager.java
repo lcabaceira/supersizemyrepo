@@ -1,9 +1,14 @@
 package org.alfresco.consulting.tools.content.creator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.File;
 import java.util.Calendar;
 
 public class FolderManager {
+    private static final Log logger = LogFactory.getLog(FolderManager.class);
+
     private static final FolderManager _instance = new FolderManager();
     private String rootDeploymentLocation;
     private Integer maxFilesPerFolder;
@@ -47,7 +52,7 @@ public class FolderManager {
                 }
                 boolean success = (new File(folderLocation)).mkdirs();
                 if (!success) {
-                    System.out.println("Failed to create directory " + folderLocation);
+                    logger.warn("Failed to create directory " + folderLocation);
                 }
             }
         }

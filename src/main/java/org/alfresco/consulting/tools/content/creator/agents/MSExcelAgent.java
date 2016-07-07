@@ -5,6 +5,8 @@ import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
 import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
 import org.alfresco.consulting.words.RandomWords;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.util.IOUtils;
@@ -13,6 +15,7 @@ import java.io.*;
 import java.util.Properties;
 
 public class MSExcelAgent extends Thread implements Runnable {
+    private static final Log logger = LogFactory.getLog(MSExcelAgent.class);
     private static Properties properties;
     private final Boolean createSmallFiles;
 
@@ -41,7 +44,7 @@ public class MSExcelAgent extends Thread implements Runnable {
                 /* Close Input Stream */
                 my_banner_image.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Unable to copy image into Excel document", e);
             }
                 /* Create the drawing container */
             HSSFPatriarch drawing = my_sheet.createDrawingPatriarch();
@@ -176,9 +179,9 @@ public class MSExcelAgent extends Thread implements Runnable {
             my_workbook.write(out);
             out.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Unable to save excel document", e);
         }
 
-        CompletionService.registerCompletion();
+        CompletionTracker.registerCompletion();
     }
 }

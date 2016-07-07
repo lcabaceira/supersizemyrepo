@@ -5,6 +5,8 @@ import org.alfresco.consulting.tools.content.creator.CustomXWPFDocument;
 import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
 import org.alfresco.consulting.words.RandomWords;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.usermodel.*;
 
@@ -15,6 +17,8 @@ import java.util.Calendar;
 import java.util.Properties;
 
 public class MSWordAgent extends Thread implements Runnable {
+    private static final Log logger = LogFactory.getLog(MSWordAgent.class);
+
     private static Properties properties;
     private final Boolean createSmallFiles;
 
@@ -33,7 +37,7 @@ public class MSWordAgent extends Thread implements Runnable {
         try {
             document = new CustomXWPFDocument();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Unable to create empty word document", e);
         }
 
         // insert doc details
@@ -109,9 +113,8 @@ public class MSWordAgent extends Thread implements Runnable {
                 String blipId;
                 blipId = paragraphX.getDocument().addPictureData(new FileInputStream(randomImage), Document.PICTURE_TYPE_JPEG);
                 document.createPicture(blipId, document.getNextPicNameNumber(Document.PICTURE_TYPE_JPEG), 800, 600);
-            } catch (InvalidFormatException | FileNotFoundException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+            } catch (InvalidFormatException | FileNotFoundException e) {
+                logger.error("Unable to add image to word document", e);
             }
         }
 
@@ -150,7 +153,7 @@ public class MSWordAgent extends Thread implements Runnable {
             outStream = new FileOutputStream(folderLocation + "/" + fileName);
             BulkImportManifestCreator.createBulkManifest(fileName, folderLocation, properties);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error("Unable to create manifest file", e);
         }
 
         try {
@@ -158,14 +161,10 @@ public class MSWordAgent extends Thread implements Runnable {
                 document.write(outStream);
                 outStream.close();
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Second Catch");
-            e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("Third Catch");
-            e.printStackTrace();
+            logger.error("Unable to save Word document", e);
         }
 
-        CompletionService.registerCompletion();
+        CompletionTracker.registerCompletion();
     }
 }
