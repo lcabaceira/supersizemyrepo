@@ -1,78 +1,29 @@
 package org.alfresco.consulting.tools.content.creator.agents;
-import java.io.*;
-import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Properties;
-import java.util.Random;
 
-import org.alfresco.consulting.locator.PropertiesLocator;
 import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
 import org.alfresco.consulting.tools.content.creator.CustomXWPFDocument;
+import org.alfresco.consulting.tools.content.creator.FolderManager;
+import org.alfresco.consulting.tools.content.creator.ImageManager;
 import org.alfresco.consulting.words.RandomWords;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.xwpf.usermodel.*;
 
+import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Properties;
+
 public class MSWordAgent extends Thread implements Runnable {
-    /**
-     * @param args
-     * @throws IOException
-     */
-
-    private static String files_deployment_location;
-    private static String images_location;
     private static Properties properties;
-    private static String max_files_per_folder="40";   // defaults to 40, but can be a parameter of the constructor
+    private final Boolean createSmallFiles;
 
-    public MSWordAgent(String _files_deployment_location, String _images_location, Properties _properties) {
-        this.files_deployment_location = _files_deployment_location;
-        this.images_location = _images_location;
-        this.properties = _properties;
+    public MSWordAgent(Properties _properties, Boolean createSmallFiles) {
+        properties = _properties;
+        this.createSmallFiles = createSmallFiles;
     }
 
-    public MSWordAgent(String _max_files_per_folder,String _files_deployment_location, String _images_location, Properties _properties) {
-        this.files_deployment_location = _files_deployment_location;
-        this.images_location = _images_location;
-        this.properties = _properties;
-        this.max_files_per_folder = _max_files_per_folder;
-    }
-
-
-    private static int findNumberOfFiles(String dir, String ext) {
-        File file = new File(dir);
-        if(!file.exists()) System.out.println(dir + " Directory doesn't exists");
-        File[] listFiles = file.listFiles(new MyFileNameFilter(ext));
-        if(listFiles.length ==0){
-            System.out.println(dir + "doesn't have any file with extension "+ext);
-            return 0;
-        }else{
-            for(File f : listFiles)
-                System.out.println("File: "+dir+File.separator+f.getName());
-            return listFiles.length;
-        }
-    }
-
-    //FileNameFilter implementation
-    public static class MyFileNameFilter implements FilenameFilter{
-
-        private String ext;
-
-        public MyFileNameFilter(String ext){
-            this.ext = ext.toLowerCase();
-        }
-        @Override
-        public boolean accept(File dir, String name) {
-            return name.toLowerCase().endsWith(ext);
-        }
-
-    }
-
-    public void run(){
-
-
-
-
+    public void run() {
         RandomWords.init();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
@@ -87,6 +38,7 @@ public class MSWordAgent extends Thread implements Runnable {
 
         // insert doc details
         // Createa a para -1
+        assert document != null;
         XWPFParagraph paragraphOne = document.createParagraph();
         paragraphOne.setAlignment(ParagraphAlignment.CENTER);
         XWPFRun paragraphOneRunOne = paragraphOne.createRun();
@@ -95,6 +47,7 @@ public class MSWordAgent extends Thread implements Runnable {
         paragraphOneRunOne.setFontFamily("Verdana");
         paragraphOneRunOne.setColor("000070");
         paragraphOneRunOne.setText("Daily Status Report");
+
         // Createa a para -2
         XWPFParagraph paragraphTwo = document.createParagraph();
         paragraphTwo.setAlignment(ParagraphAlignment.CENTER);
@@ -104,6 +57,7 @@ public class MSWordAgent extends Thread implements Runnable {
         paragraphTwoRunOne.setColor("000070");
         paragraphTwoRunOne.setText(date);
         paragraphTwoRunOne.addBreak();
+
         // Createa a para -3
         XWPFParagraph paragraphThree = document.createParagraph();
         paragraphThree.setAlignment(ParagraphAlignment.LEFT);
@@ -114,6 +68,7 @@ public class MSWordAgent extends Thread implements Runnable {
 
         paragraphThreeRunOne.setText(date);
         paragraphThreeRunOne.addBreak();
+
         // Createa a para -4
         XWPFParagraph paragraphFour = document.createParagraph();
         paragraphFour.setAlignment(ParagraphAlignment.LEFT);
@@ -124,6 +79,7 @@ public class MSWordAgent extends Thread implements Runnable {
         paragraphFourRunOne.setFontFamily("Verdana");
         paragraphFourRunOne.setColor("000070");
         paragraphFourRunOne.setText("Benchmark Document with Random Words");
+
         // insert doc details end
         XWPFParagraph paragraphFive = document.createParagraph();
         paragraphFive.setAlignment(ParagraphAlignment.RIGHT);
@@ -139,29 +95,24 @@ public class MSWordAgent extends Thread implements Runnable {
         XWPFParagraph paragraphSix = document.createParagraph();
         paragraphFive.setAlignment(ParagraphAlignment.RIGHT);
         XWPFRun paragraphSixRunOne = paragraphSix.createRun();
-        paragraphFiveRunOne.addBreak();
-        paragraphFourRunOne.setBold(true);
-        paragraphFourRunOne.setText("     ");
-        // Adding a file
-        try {
-            // Working addPicture Code below...
-            XWPFParagraph paragraphX = document.createParagraph();
-            paragraphX.setAlignment(ParagraphAlignment.CENTER);
-            File imagesFolder = new File(images_location);
-            File[] files =   imagesFolder.listFiles();
-            int size = files.length;
-            Random rand = new Random();
-            int number = rand.nextInt(size);
-            File randomImage = files[number];
-            // adding local random image
-            String blipId = null;
-            blipId = paragraphX.getDocument().addPictureData(new FileInputStream(randomImage), Document.PICTURE_TYPE_JPEG);
-            document.createPicture(blipId,document.getNextPicNameNumber(Document.PICTURE_TYPE_JPEG),800, 600);
-        } catch (InvalidFormatException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }   catch (FileNotFoundException e) {
-            e.printStackTrace();
+        paragraphSixRunOne.addBreak();
+        paragraphSixRunOne.setBold(true);
+        paragraphSixRunOne.setText("     ");
+        if (!createSmallFiles) {
+            // Adding a file
+            try {
+                // Working addPicture Code below...
+                XWPFParagraph paragraphX = document.createParagraph();
+                paragraphX.setAlignment(ParagraphAlignment.CENTER);
+                File randomImage = ImageManager.getImageManager().getRandomImage();
+                // adding local random image
+                String blipId;
+                blipId = paragraphX.getDocument().addPictureData(new FileInputStream(randomImage), Document.PICTURE_TYPE_JPEG);
+                document.createPicture(blipId, document.getNextPicNameNumber(Document.PICTURE_TYPE_JPEG), 800, 600);
+            } catch (InvalidFormatException | FileNotFoundException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         }
 
         XWPFParagraph p3 = document.createParagraph();
@@ -189,53 +140,24 @@ public class MSWordAgent extends Thread implements Runnable {
         r5.addBreak(BreakClear.ALL);
         r5.setText(RandomWords.getWords(4000));
 
-//        try {
-            // Working addPicture Code below...
-            XWPFParagraph paragraphY = document.createParagraph();
-            paragraphY.setAlignment(ParagraphAlignment.CENTER);
-            // adding http image
-//            InputStream is = null;
-//            is = new URL("http://lorempixel.com/g/800/600/").openStream();
-//            String blipIdw = paragraphY.getDocument().addPictureData(is,Document.PICTURE_TYPE_JPEG);
-//            document.createPicture(blipIdw,document.getNextPicNameNumber(Document.PICTURE_TYPE_JPEG),800, 600);
-//        } catch (InvalidFormatException e1) {
-//            // TODO Auto-generated catch block
-//            e1.printStackTrace();
-//        }  catch (IOException e) {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        }
+        XWPFParagraph paragraphY = document.createParagraph();
+        paragraphY.setAlignment(ParagraphAlignment.CENTER);
+
         FileOutputStream outStream = null;
         try {
-
-            String fileName =  cal.getTimeInMillis() +"_MSWordSSMR.docx";
-            File deploymentFolder = new File(files_deployment_location);
-            File[] deploymentfiles =   deploymentFolder.listFiles();
-            int total_deployment_size = deploymentfiles.length;
-            Calendar calendar = Calendar.getInstance();
-            FileOutputStream out = null;
-            // checking if the deployment location is full (more than max_files_per_folder files)
-            if (total_deployment_size>Integer.valueOf(max_files_per_folder)) {
-                String dir_name = files_deployment_location + "/" + calendar.getTimeInMillis();
-                boolean success = (new File(dir_name)).mkdirs();
-                this.files_deployment_location = dir_name;
-                if (!success) {
-                    System.out.println("Failed to create directory " + dir_name );
-                }
-                this.files_deployment_location=dir_name;
-                outStream = new FileOutputStream(files_deployment_location + "/" + fileName);
-                BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location, properties);
-            } else {
-                outStream = new FileOutputStream(files_deployment_location + "/" + fileName);
-                BulkImportManifestCreator.createBulkManifest(fileName,files_deployment_location, properties);
-
-            }
+            String fileName = cal.getTimeInMillis() + "_MSWordSSMR.docx";
+            String folderLocation = FolderManager.getFolderLocation();
+            outStream = new FileOutputStream(folderLocation + "/" + fileName);
+            BulkImportManifestCreator.createBulkManifest(fileName, folderLocation, properties);
         } catch (FileNotFoundException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
         try {
-            document.write(outStream);
-            outStream.close();
+            if (outStream != null) {
+                document.write(outStream);
+                outStream.close();
+            }
         } catch (FileNotFoundException e) {
             System.out.println("Second Catch");
             e.printStackTrace();
@@ -244,9 +166,6 @@ public class MSWordAgent extends Thread implements Runnable {
             e.printStackTrace();
         }
 
-
-
-
+        CompletionService.registerCompletion();
     }
-
 }

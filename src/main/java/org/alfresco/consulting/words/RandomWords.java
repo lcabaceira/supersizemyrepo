@@ -1,111 +1,92 @@
 package org.alfresco.consulting.words;
 
-import org.alfresco.consulting.locator.PropertiesLocator;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Properties;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * Random Word generator
- * 
- * <p>Generates a string of the required length   
- * from random real words
- * 
+ * <p>
+ * <p>Generates a string of the required length from random real words
+ *
  * @author AHunt
  */
-public class RandomWords
-{
-    private static Properties props = PropertiesLocator.getProperties("super-size-my-repo.properties");
-    private static String files_deployment_location = props.getProperty("files_deployment_location");
+public class RandomWords {
+    private static boolean initialized = false;
+    private static int maxWordsInMemory = 300000;
+    private static String wordFileName = "words.txt";
+    private static ArrayList<String> wordList;
 
-	private static int maxWordsInMemory = 300000;
-	private static String wordFileName = "words.txt";
-	private static ArrayList<String> wordList;
-	private static Random rnd = new Random();
-	
-	public RandomWords()
-	{
-		
-		  wordList = readWordsFromFile(maxWordsInMemory);
-	}
-	public static void init()
-	{
-		  wordList = readWordsFromFile(maxWordsInMemory);
-	}
-	public static String getWord()
-	{
-		
-		return wordList.get(rnd.nextInt(wordList.size()));
-	}
-	public static String getWords(int numWords)
-	{
+    public RandomWords() {
+        init();
+    }
 
-		if (numWords==0)
-		{
-			return "";
-		}
-		String returnString="";
-		for (int i=1;i<= numWords;i++)
-		{
-			returnString+=getWord()+" ";
-		}
-		//Strip the trailing space
-		// Because I'm too lazy to do this in a CS-approved way
-		returnString = returnString.substring(0, returnString.length()-1);
-		return returnString;
-	}
-	
-	public void setMaxWordsInMemory(int maxWordsInMemory) 
-	{
-		this.maxWordsInMemory = maxWordsInMemory;
-	}
-	public int getMaxWordsInMemory() 
-	{
-		return maxWordsInMemory;
-	}
-	public void setWordFileName(String wordFileName)
-	{
-		this.wordFileName = wordFileName;
-	}
-	public String getWordFileName() 
-	{
-		return wordFileName;
-	}
-	
-	
-	private static ArrayList<String> readWordsFromFile(int maxNumWords)
-	{
-		int wordsRead=0;
-		ArrayList<String> words = new ArrayList<String>();
-		try
-		{
-			InputStreamReader isr = new InputStreamReader(RandomWords.class.getResourceAsStream(wordFileName));
-			BufferedReader br = new BufferedReader(isr);
-			String tmp;
-			tmp = br.readLine(); // read first line of file.
-			
-			while((tmp != null) && (wordsRead <= maxNumWords))
-			{ 
-				words.add(tmp);
-				tmp = br.readLine();
-			}
-			br.close();
-		}
-		catch (FileNotFoundException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
-		
-		return words;
-	}
-	 
+    public static void init() {
+        if (!initialized) {
+            wordList = readWordsFromFile(maxWordsInMemory);
+            initialized = true;
+        }
+    }
+
+    private static String getWord() {
+        int randomNumber = ThreadLocalRandom.current().nextInt(wordList.size());
+        return wordList.get(randomNumber);
+    }
+
+    public static String getWords(int numWords) {
+
+        if (numWords == 0) {
+            return "";
+        }
+
+        String[] words = new String[numWords];
+
+        for(int i = 0; i < numWords; i++) {
+            words[i] = getWord();
+        }
+
+        return StringUtils.join(words, " ");
+    }
+
+    public void setMaxWordsInMemory(int maxWordsInMemory) {
+        RandomWords.maxWordsInMemory = maxWordsInMemory;
+    }
+
+    public int getMaxWordsInMemory() {
+        return maxWordsInMemory;
+    }
+
+    public void setWordFileName(String wordFileName) {
+        RandomWords.wordFileName = wordFileName;
+    }
+
+    public String getWordFileName() {
+        return wordFileName;
+    }
+
+
+    private static ArrayList<String> readWordsFromFile(int maxNumWords) {
+        int wordsRead = 0;
+        ArrayList<String> words = new ArrayList<String>();
+        try {
+            InputStreamReader isr = new InputStreamReader(RandomWords.class.getResourceAsStream(wordFileName));
+            BufferedReader br = new BufferedReader(isr);
+            String tmp;
+            tmp = br.readLine(); // read first line of file.
+
+            while ((tmp != null) && (wordsRead <= maxNumWords)) {
+                words.add(tmp);
+                tmp = br.readLine();
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return words;
+    }
 }
