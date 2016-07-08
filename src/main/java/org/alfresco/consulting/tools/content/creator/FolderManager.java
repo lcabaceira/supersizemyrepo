@@ -18,7 +18,7 @@ public class FolderManager {
     private FolderManager() {
         String osName = System.getProperty("os.name");
         if (osName.toLowerCase().startsWith("windows")) {
-            maxPathLength = 200;
+            maxPathLength = 180;
         }
     }
 

@@ -3,6 +3,7 @@ package org.alfresco.consulting.tools.content.creator.agents;
 import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
 import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
+import org.alfresco.consulting.tools.content.creator.executor.AgentExecutionInfo;
 import org.alfresco.consulting.words.RandomWords;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,14 +18,6 @@ import java.util.Properties;
 
 public class MSPowerPointAgent extends Thread implements Runnable {
     private static final Log logger = LogFactory.getLog(MSPowerPointAgent.class);
-
-    private static Properties properties;
-    private final Boolean createSmallFiles;
-
-    public MSPowerPointAgent(Properties _properties, Boolean createSmallFiles) {
-        properties = _properties;
-        this.createSmallFiles = createSmallFiles;
-    }
 
     public void run() {
         RandomWords.init();
@@ -49,7 +42,7 @@ public class MSPowerPointAgent extends Thread implements Runnable {
         XSLFSlide slide[] = {ppt.createSlide(), ppt.createSlide(), ppt.createSlide(), ppt.createSlide(), ppt.createSlide(), ppt.createSlide()};
 
         // random image
-        if (!createSmallFiles) {
+        if (!isCreatingSmallerFiles()) {
             for (int i = 0; i < 6; i++) {
                 File randomImage = ImageManager.getImageManager().getRandomImage();
                 byte[] pictureData = new byte[0];
@@ -68,7 +61,7 @@ public class MSPowerPointAgent extends Thread implements Runnable {
         try {
             final String folderLocation = FolderManager.getFolderLocation();
             FileOutputStream out = new FileOutputStream(folderLocation + "/" + fileName);
-            BulkImportManifestCreator.createBulkManifest(fileName, folderLocation, properties);
+            BulkImportManifestCreator.createBulkManifest(fileName, folderLocation, getDocumentProperties());
             ppt.write(out);
             out.close();
         } catch (IOException e) {
@@ -76,6 +69,14 @@ public class MSPowerPointAgent extends Thread implements Runnable {
         }
 
         CompletionTracker.registerCompletion();
+    }
+
+    private boolean isCreatingSmallerFiles() {
+        return AgentExecutionInfo.getDefaultInstance().isCreatingSmallerFiles();
+    }
+
+    private Properties getDocumentProperties() {
+        return AgentExecutionInfo.getDefaultInstance().getDocumentProperties();
     }
 
 }

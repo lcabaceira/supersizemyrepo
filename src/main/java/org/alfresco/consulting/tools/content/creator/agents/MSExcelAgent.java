@@ -4,6 +4,7 @@ package org.alfresco.consulting.tools.content.creator.agents;
 import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
 import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
+import org.alfresco.consulting.tools.content.creator.executor.AgentExecutionInfo;
 import org.alfresco.consulting.words.RandomWords;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,20 +17,13 @@ import java.util.Properties;
 
 public class MSExcelAgent extends Thread implements Runnable {
     private static final Log logger = LogFactory.getLog(MSExcelAgent.class);
-    private static Properties properties;
-    private final Boolean createSmallFiles;
-
-    public MSExcelAgent(Properties _properties, Boolean createSmallFiles) {
-        properties = _properties;
-        this.createSmallFiles = createSmallFiles;
-    }
 
     public void run() {
         RandomWords.init();
         /* Create a Workbook and Worksheet */
         HSSFWorkbook my_workbook = new HSSFWorkbook();
 
-        if (!createSmallFiles) {
+        if (!isCreatingSmallerFiles()) {
             HSSFSheet my_sheet = my_workbook.createSheet("SuperSizeMyRepoBanner");
          /* Read the input image into InputStream */
             File randomImage = ImageManager.getImageManager().getRandomImage();
@@ -44,19 +38,23 @@ public class MSExcelAgent extends Thread implements Runnable {
                 /* Close Input Stream */
                 my_banner_image.close();
             } catch (IOException e) {
-                logger.error("Unable to copy image into Excel document", e);
+                logger.error("Unable to copy image " + randomImage + " into Excel document", e);
             }
+            try {
                 /* Create the drawing container */
-            HSSFPatriarch drawing = my_sheet.createDrawingPatriarch();
+                HSSFPatriarch drawing = my_sheet.createDrawingPatriarch();
                 /* Create an anchor point */
-            ClientAnchor my_anchor = new HSSFClientAnchor();
+                ClientAnchor my_anchor = new HSSFClientAnchor();
                 /* Define top left corner, and we can resize picture suitable from there */
-            my_anchor.setCol1(2);
-            my_anchor.setRow1(1);
+                my_anchor.setCol1(2);
+                my_anchor.setRow1(1);
                 /* Invoke createPicture and pass the anchor point and ID */
-            HSSFPicture my_picture = drawing.createPicture(my_anchor, my_picture_id);
+                HSSFPicture my_picture = drawing.createPicture(my_anchor, my_picture_id);
                 /* Call resize method, which resizes the image */
-            my_picture.resize();
+                my_picture.resize();
+            } catch (Exception e) {
+                logger.error("Unable to edit the image from " + randomImage + ".", e);
+            }
         /* Write changes to the workbook */
         }
 
@@ -175,7 +173,7 @@ public class MSExcelAgent extends Thread implements Runnable {
             String folderLocation = FolderManager.getFolderLocation();
             String fileName = FolderManager.createFileName("_MSExcelSSMR.xls");
             FileOutputStream out = new FileOutputStream(folderLocation + "/" + fileName);
-            BulkImportManifestCreator.createBulkManifest(fileName, folderLocation, properties);
+            BulkImportManifestCreator.createBulkManifest(fileName, folderLocation, getDocumentProperties());
             my_workbook.write(out);
             out.close();
         } catch (IOException e) {
@@ -183,5 +181,13 @@ public class MSExcelAgent extends Thread implements Runnable {
         }
 
         CompletionTracker.registerCompletion();
+    }
+
+    private Properties getDocumentProperties() {
+        return AgentExecutionInfo.getDefaultInstance().getDocumentProperties();
+    }
+
+    private boolean isCreatingSmallerFiles() {
+        return AgentExecutionInfo.getDefaultInstance().isCreatingSmallerFiles();
     }
 }

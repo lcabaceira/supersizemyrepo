@@ -4,6 +4,7 @@ import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
 import org.alfresco.consulting.tools.content.creator.CustomXWPFDocument;
 import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
+import org.alfresco.consulting.tools.content.creator.executor.AgentExecutionInfo;
 import org.alfresco.consulting.words.RandomWords;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,14 +19,6 @@ import java.util.Properties;
 
 public class MSWordAgent extends Thread implements Runnable {
     private static final Log logger = LogFactory.getLog(MSWordAgent.class);
-
-    private static Properties properties;
-    private final Boolean createSmallFiles;
-
-    public MSWordAgent(Properties _properties, Boolean createSmallFiles) {
-        properties = _properties;
-        this.createSmallFiles = createSmallFiles;
-    }
 
     public void run() {
         RandomWords.init();
@@ -102,7 +95,7 @@ public class MSWordAgent extends Thread implements Runnable {
         paragraphSixRunOne.addBreak();
         paragraphSixRunOne.setBold(true);
         paragraphSixRunOne.setText("     ");
-        if (!createSmallFiles) {
+        if (!isCreatingSmallerFiles()) {
             // Adding a file
             try {
                 // Working addPicture Code below...
@@ -151,7 +144,7 @@ public class MSWordAgent extends Thread implements Runnable {
             String fileName = cal.getTimeInMillis() + "_MSWordSSMR.docx";
             String folderLocation = FolderManager.getFolderLocation();
             outStream = new FileOutputStream(folderLocation + "/" + fileName);
-            BulkImportManifestCreator.createBulkManifest(fileName, folderLocation, properties);
+            BulkImportManifestCreator.createBulkManifest(fileName, folderLocation, getDocumentProperties());
         } catch (FileNotFoundException e) {
             logger.error("Unable to create manifest file", e);
         }
@@ -166,5 +159,13 @@ public class MSWordAgent extends Thread implements Runnable {
         }
 
         CompletionTracker.registerCompletion();
+    }
+
+    private boolean isCreatingSmallerFiles() {
+        return AgentExecutionInfo.getDefaultInstance().isCreatingSmallerFiles();
+    }
+
+    private Properties getDocumentProperties() {
+        return AgentExecutionInfo.getDefaultInstance().getDocumentProperties();
     }
 }

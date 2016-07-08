@@ -8,6 +8,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
 import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
+import org.alfresco.consulting.tools.content.creator.executor.AgentExecutionInfo;
 import org.alfresco.consulting.words.RandomWords;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,14 +21,6 @@ import java.util.Properties;
 
 public class PdfAgent extends Thread implements Runnable {
     private static final Log logger = LogFactory.getLog(PdfAgent.class);
-
-    private static Properties properties;
-    private final Boolean createSmallFiles;
-
-    public PdfAgent(Properties _properties, Boolean createSmallFiles) {
-        properties = _properties;
-        this.createSmallFiles = createSmallFiles;
-    }
 
     private static Font catFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
     private static Font redFont = new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL, BaseColor.RED);
@@ -43,7 +36,7 @@ public class PdfAgent extends Thread implements Runnable {
 
             Document document = new Document();
             // Creating the metadata file
-            BulkImportManifestCreator.createBulkManifest(fileName, filePath, properties);
+            BulkImportManifestCreator.createBulkManifest(fileName, filePath, getDocumentProperties());
             PdfWriter.getInstance(document, new FileOutputStream(filePath + "/" + fileName));
             document.open();
 
@@ -52,7 +45,7 @@ public class PdfAgent extends Thread implements Runnable {
             addContent(document);
 
             //Random local image
-            if (!createSmallFiles) {
+            if (!isCreatingSmallerFiles()) {
                 File randomImage = ImageManager.getImageManager().getRandomImage();
 
                 String randomFilePath = randomImage.getAbsolutePath();
@@ -123,6 +116,14 @@ public class PdfAgent extends Thread implements Runnable {
         }
 
         CompletionTracker.registerCompletion();
+    }
+
+    private boolean isCreatingSmallerFiles() {
+        return AgentExecutionInfo.getDefaultInstance().isCreatingSmallerFiles();
+    }
+
+    private Properties getDocumentProperties() {
+        return AgentExecutionInfo.getDefaultInstance().getDocumentProperties();
     }
 
     // iText allows to add metadata to the PDF which can be viewed in your Adobe Reader under File -> Properties
