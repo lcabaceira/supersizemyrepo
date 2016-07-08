@@ -1,12 +1,13 @@
-package org.alfresco.consulting.tools.content.creator.executor;
+package org.alfresco.consulting.tools.content.creator.executor.parameters;
 
 import org.alfresco.consulting.locator.PropertiesLocator;
+import org.alfresco.consulting.tools.content.creator.executor.ExecutionConfiguration;
 
 import java.util.Properties;
 
 import static org.alfresco.consulting.PropertiesUtil.getBooleanValue;
 
-class PropertyParameterGenerator implements ParameterGenerator {
+public class PropertyParameterGenerator implements ParameterGenerator {
     private Properties executionProperties;
 
     public ExecutorParameters generateParameters() {

@@ -1,4 +1,4 @@
-package org.alfresco.consulting.tools.content.creator.executor;
+package org.alfresco.consulting.tools.content.creator.executor.parameters;
 
 import java.util.Properties;
 
@@ -17,7 +17,7 @@ public class AgentExecutionInfo {
         return defaultInstance;
     }
 
-    static void setDefaultInstance(AgentExecutionInfo defaultInstance) {
+    public static void setDefaultInstance(AgentExecutionInfo defaultInstance) {
         AgentExecutionInfo.defaultInstance = defaultInstance;
     }
 

@@ -1,4 +1,4 @@
-package org.alfresco.consulting.tools.content.creator.executor;
+package org.alfresco.consulting.tools.content.creator.executor.parameters;
 
 public class TypesToInclude {
     private final Boolean pdf;
@@ -7,7 +7,7 @@ public class TypesToInclude {
     private final Boolean doc;
     private final Boolean jpg;
 
-    public TypesToInclude(Boolean pdf, Boolean ppt, Boolean xls, Boolean doc, Boolean jpg) {
+    TypesToInclude(Boolean pdf, Boolean ppt, Boolean xls, Boolean doc, Boolean jpg) {
         this.pdf = pdf;
         this.ppt = ppt;
         this.xls = xls;

@@ -4,6 +4,8 @@ import com.google.common.base.Stopwatch;
 import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
 import org.alfresco.consulting.tools.content.creator.agents.*;
+import org.alfresco.consulting.tools.content.creator.executor.parameters.AgentExecutionInfo;
+import org.alfresco.consulting.tools.content.creator.executor.parameters.ExecutorParameters;
 import org.alfresco.consulting.words.RandomWords;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -64,6 +66,15 @@ class SuperSizeExecutor {
     }
 
     private void poolThreadsForExecution() {
+        List<AgentExecutor> agentExecutors = getSelectedAgentExecutors();
+
+        for (int i = 0; i < getNumThreads(); i++) {
+            final int index = i % agentExecutors.size();
+            agentExecutors.get(index).executeAgent();
+        }
+    }
+
+    private List<AgentExecutor> getSelectedAgentExecutors() {
         List<AgentExecutor> agentExecutors = new ArrayList<>(5);
 
         if (isIncludePPT()) agentExecutors.add(new PPTAgentExecutor());
@@ -72,10 +83,7 @@ class SuperSizeExecutor {
         if (isIncludeDOC()) agentExecutors.add(new DOCAgentExecutor());
         if (isIncludeJPEG()) agentExecutors.add(new JPEGAgentExecutor());
 
-        for (int i = 0; i < getNumThreads(); i++) {
-            final int index = i % agentExecutors.size();
-            agentExecutors.get(index).executeAgent();
-        }
+        return agentExecutors;
     }
 
     private void displayTiming() {

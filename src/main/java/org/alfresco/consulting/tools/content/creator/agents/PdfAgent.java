@@ -8,7 +8,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
 import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
-import org.alfresco.consulting.tools.content.creator.executor.AgentExecutionInfo;
+import org.alfresco.consulting.tools.content.creator.executor.parameters.AgentExecutionInfo;
 import org.alfresco.consulting.words.RandomWords;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

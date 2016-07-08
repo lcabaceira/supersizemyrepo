@@ -1,12 +1,14 @@
-package org.alfresco.consulting.tools.content.creator.executor;
+package org.alfresco.consulting.tools.content.creator.executor.parameters;
+
+import org.alfresco.consulting.tools.content.creator.executor.ExecutionConfiguration;
 
 import java.util.Properties;
 
-class ArgumentParameterGenerator implements ParameterGenerator {
+public class ArgumentParameterGenerator implements ParameterGenerator {
     private String[] args;
     private Properties propsUI;
 
-    ArgumentParameterGenerator(String[] args, Properties propsUI) {
+    public ArgumentParameterGenerator(String[] args, Properties propsUI) {
         this.args = args;
         this.propsUI = propsUI;
     }
