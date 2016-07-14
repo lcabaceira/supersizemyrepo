@@ -1,45 +1,44 @@
 package org.alfresco.consulting.tools.content.creator.agents;
 
-import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
-import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
-import org.alfresco.consulting.tools.content.creator.executor.parameters.AgentExecutionInfo;
-import org.alfresco.consulting.words.RandomWords;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.util.IOUtils;
 
 import java.io.*;
-import java.util.Properties;
 
-public class JpgAgent extends Thread implements Runnable {
+public class JpgAgent extends AgentWithFileWriter {
     private static final Log logger = LogFactory.getLog(JpgAgent.class);
+    private InputStream randomImageStream;
 
-    public void run() {
-        RandomWords.init();
+    @Override
+    protected Log getLogger() {
+        return logger;
+    }
 
+    @Override
+    protected void createFile() {
         try {
-            File randomImage = ImageManager.getImageManager().getRandomImage();
-            InputStream is = new FileInputStream(randomImage);
-            try {
-                String fileName = FolderManager.createFileName("_JpegImageSSMR.jpg");
-                String folderLocation = FolderManager.getFolderLocation();
-                FileOutputStream out = new FileOutputStream(folderLocation + "/" + fileName);
-                BulkImportManifestCreator.createBulkManifest(fileName, folderLocation, getDocumentProperties());
-                IOUtils.copy(is, out);
-                out.close();
-                is.close();
-            } catch (IOException e) {
-                logger.error("Unable to copy image.", e);
-            }
-        } catch (Exception e) {
-            logger.error("First catch", e);
+            randomImageStream = new FileInputStream(getRandomImage());
+            writeOutFiles();
+            randomImageStream.close();
+        } catch (IOException e) {
+            getLogger().error("Unable to read image file", e);
         }
-
-        CompletionTracker.registerCompletion();
     }
 
-    private Properties getDocumentProperties() {
-        return AgentExecutionInfo.getDefaultInstance().getDocumentProperties();
+    private File getRandomImage() {
+        return ImageManager.getImageManager().getRandomImage();
     }
+
+    @Override
+    protected void performWriteOfFile(FileOutputStream out) throws IOException {
+        IOUtils.copy(randomImageStream, out);
+    }
+
+    @Override
+    protected String getFileNameSuffix() {
+        return "_JpegImageSSMR.jpg";
+    }
+
 }

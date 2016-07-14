@@ -1,10 +1,7 @@
 package org.alfresco.consulting.tools.content.creator.agents;
 
 
-import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
-import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
-import org.alfresco.consulting.tools.content.creator.executor.parameters.AgentExecutionInfo;
 import org.alfresco.consulting.words.RandomWords;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,65 +10,34 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.util.IOUtils;
 
 import java.io.*;
-import java.util.Properties;
 
-public class MSExcelAgent extends Thread implements Runnable {
+public class MSExcelAgent extends AgentWithFileWriter implements Runnable {
     private static final Log logger = LogFactory.getLog(MSExcelAgent.class);
+    private HSSFWorkbook workbook;
 
-    public void run() {
-        RandomWords.init();
-        /* Create a Workbook and Worksheet */
-        HSSFWorkbook my_workbook = new HSSFWorkbook();
+    protected Log getLogger() {
+        return logger;
+    }
 
-        if (!isCreatingSmallerFiles()) {
-            HSSFSheet my_sheet = my_workbook.createSheet("SuperSizeMyRepoBanner");
-         /* Read the input image into InputStream */
-            File randomImage = ImageManager.getImageManager().getRandomImage();
+    protected void createFile() {
+        workbook = new HSSFWorkbook();
 
-            int my_picture_id = 0;
-            try {
-                InputStream my_banner_image = new FileInputStream(randomImage);
-                /* Convert Image to byte array */
-                byte[] bytes = IOUtils.toByteArray(my_banner_image);
-                /* Add Picture to workbook and get a index for the picture */
-                my_picture_id = my_workbook.addPicture(bytes, Workbook.PICTURE_TYPE_JPEG);
-                /* Close Input Stream */
-                my_banner_image.close();
-            } catch (IOException e) {
-                logger.error("Unable to copy image " + randomImage + " into Excel document", e);
-            }
-            try {
-                /* Create the drawing container */
-                HSSFPatriarch drawing = my_sheet.createDrawingPatriarch();
-                /* Create an anchor point */
-                ClientAnchor my_anchor = new HSSFClientAnchor();
-                /* Define top left corner, and we can resize picture suitable from there */
-                my_anchor.setCol1(2);
-                my_anchor.setRow1(1);
-                /* Invoke createPicture and pass the anchor point and ID */
-                HSSFPicture my_picture = drawing.createPicture(my_anchor, my_picture_id);
-                /* Call resize method, which resizes the image */
-                my_picture.resize();
-            } catch (Exception e) {
-                logger.error("Unable to edit the image from " + randomImage + ".", e);
-            }
-        /* Write changes to the workbook */
-        }
+        addBannerSheetToWorkbook();
 
         // create a new sheet
-        Sheet s = my_workbook.createSheet();
+        Sheet s = workbook.createSheet();
         // declare a row object reference
         Row r;
         // declare a cell object reference
         Cell c;
         // create 3 cell styles
-        CellStyle cs = my_workbook.createCellStyle();
-        CellStyle cs2 = my_workbook.createCellStyle();
-        CellStyle cs3 = my_workbook.createCellStyle();
-        DataFormat df = my_workbook.createDataFormat();
+        CellStyle cs = workbook.createCellStyle();
+        CellStyle cs2 = workbook.createCellStyle();
+        CellStyle cs3 = workbook.createCellStyle();
+        DataFormat df = workbook.createDataFormat();
         // create 2 fonts objects
-        Font f = my_workbook.createFont();
-        Font f2 = my_workbook.createFont();
+        Font f = workbook.createFont();
+        Font f2 = workbook.createFont();
 
         //set font 1 to 12 point type
         f.setFontHeightInPoints((short) 12);
@@ -106,7 +72,7 @@ public class MSExcelAgent extends Thread implements Runnable {
         cs2.setFont(f2);
 
         // set the sheet name in Unicode
-        my_workbook.setSheetName(0, "SuperSizeMyRepo ");
+        workbook.setSheetName(0, "SuperSizeMyRepo ");
 
         // create a sheet with 30 rows (0-29)
         int rownum;
@@ -169,25 +135,52 @@ public class MSExcelAgent extends Thread implements Runnable {
         }
         //end draw thick black border
 
-        try {
-            String folderLocation = FolderManager.getFolderLocation();
-            String fileName = FolderManager.createFileName("_MSExcelSSMR.xls");
-            FileOutputStream out = new FileOutputStream(folderLocation + "/" + fileName);
-            BulkImportManifestCreator.createBulkManifest(fileName, folderLocation, getDocumentProperties());
-            my_workbook.write(out);
-            out.close();
-        } catch (IOException e) {
-            logger.error("Unable to save excel document", e);
+        writeOutFiles();
+    }
+
+    @Override
+    protected void performWriteOfFile(FileOutputStream out) throws IOException {
+        workbook.write(out);
+    }
+
+    private void addBannerSheetToWorkbook() {
+        if (!isCreatingSmallerFiles()) {
+            HSSFSheet my_sheet = workbook.createSheet("SuperSizeMyRepoBanner");
+         /* Read the input image into InputStream */
+            File randomImage = ImageManager.getImageManager().getRandomImage();
+
+            int my_picture_id = 0;
+            try {
+                InputStream my_banner_image = new FileInputStream(randomImage);
+                /* Convert Image to byte array */
+                byte[] bytes = IOUtils.toByteArray(my_banner_image);
+                /* Add Picture to workbook and get a index for the picture */
+                my_picture_id = workbook.addPicture(bytes, Workbook.PICTURE_TYPE_JPEG);
+                /* Close Input Stream */
+                my_banner_image.close();
+            } catch (IOException e) {
+                getLogger().error("Unable to copy image " + randomImage + " into Excel document", e);
+            }
+            try {
+                /* Create the drawing container */
+                HSSFPatriarch drawing = my_sheet.createDrawingPatriarch();
+                /* Create an anchor point */
+                ClientAnchor my_anchor = new HSSFClientAnchor();
+                /* Define top left corner, and we can resize picture suitable from there */
+                my_anchor.setCol1(2);
+                my_anchor.setRow1(1);
+                /* Invoke createPicture and pass the anchor point and ID */
+                HSSFPicture my_picture = drawing.createPicture(my_anchor, my_picture_id);
+                /* Call resize method, which resizes the image */
+                my_picture.resize();
+            } catch (Exception e) {
+                getLogger().error("Unable to edit the image from " + randomImage + ".", e);
+            }
+        /* Write changes to the workbook */
         }
-
-        CompletionTracker.registerCompletion();
     }
 
-    private Properties getDocumentProperties() {
-        return AgentExecutionInfo.getDefaultInstance().getDocumentProperties();
-    }
-
-    private boolean isCreatingSmallerFiles() {
-        return AgentExecutionInfo.getDefaultInstance().isCreatingSmallerFiles();
+    protected String getFileNameSuffix() {
+        return "_MSExcelSSMR.xls";
     }
 }

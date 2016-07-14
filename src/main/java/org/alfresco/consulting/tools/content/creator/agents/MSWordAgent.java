@@ -1,10 +1,7 @@
 package org.alfresco.consulting.tools.content.creator.agents;
 
-import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
 import org.alfresco.consulting.tools.content.creator.CustomXWPFDocument;
-import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
-import org.alfresco.consulting.tools.content.creator.executor.parameters.AgentExecutionInfo;
 import org.alfresco.consulting.words.RandomWords;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,22 +12,25 @@ import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Properties;
 
-public class MSWordAgent extends Thread implements Runnable {
+public class MSWordAgent extends AgentWithFileWriter {
     private static final Log logger = LogFactory.getLog(MSWordAgent.class);
+    private CustomXWPFDocument document;
 
-    public void run() {
-        RandomWords.init();
+    protected Log getLogger() {
+        return logger;
+    }
+
+    protected void createFile() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         Calendar cal = Calendar.getInstance();
         String date = dateFormat.format(cal.getTime());
         // Create a document file
-        CustomXWPFDocument document = null;
+        document = null;
         try {
             document = new CustomXWPFDocument();
         } catch (IOException e) {
-            logger.error("Unable to create empty word document", e);
+            getLogger().error("Unable to create empty word document", e);
         }
 
         // insert doc details
@@ -107,7 +107,7 @@ public class MSWordAgent extends Thread implements Runnable {
                 blipId = paragraphX.getDocument().addPictureData(new FileInputStream(randomImage), Document.PICTURE_TYPE_JPEG);
                 document.createPicture(blipId, document.getNextPicNameNumber(Document.PICTURE_TYPE_JPEG), 800, 600);
             } catch (InvalidFormatException | FileNotFoundException e) {
-                logger.error("Unable to add image to word document", e);
+                getLogger().error("Unable to add image to word document", e);
             }
         }
 
@@ -121,51 +121,38 @@ public class MSWordAgent extends Thread implements Runnable {
         p3.setIndentationFirstLine(20);
         XWPFRun r4 = p3.createRun();
         r4.setTextPosition(20);
-        r4.setText(RandomWords.getWords(6000));
+        r4.setText(getRandomWords());
         r4.addBreak(BreakType.PAGE);
-        r4.setText(RandomWords.getWords(6000));
+        r4.setText(getRandomWords());
         r4.setItalic(true);
         //This would imply that this break shall be treated as a simple line break, and break the line after that word:
         XWPFRun r5 = p3.createRun();
         r5.setTextPosition(-10);
         r5.setText("For what dreams may come");
         r5.addCarriageReturn();
-        r5.setText(RandomWords.getWords(4000));
+        r5.setText(getRandomWords());
         r5.addBreak();
-        r5.setText(RandomWords.getWords(4000));
+        r5.setText(getRandomWords());
         r5.addBreak(BreakClear.ALL);
-        r5.setText(RandomWords.getWords(4000));
+        r5.setText(getRandomWords());
 
         XWPFParagraph paragraphY = document.createParagraph();
         paragraphY.setAlignment(ParagraphAlignment.CENTER);
 
-        FileOutputStream outStream = null;
-        try {
-            String fileName = cal.getTimeInMillis() + "_MSWordSSMR.docx";
-            String folderLocation = FolderManager.getFolderLocation();
-            outStream = new FileOutputStream(folderLocation + "/" + fileName);
-            BulkImportManifestCreator.createBulkManifest(fileName, folderLocation, getDocumentProperties());
-        } catch (FileNotFoundException e) {
-            logger.error("Unable to create manifest file", e);
-        }
-
-        try {
-            if (outStream != null) {
-                document.write(outStream);
-                outStream.close();
-            }
-        } catch (IOException e) {
-            logger.error("Unable to save Word document", e);
-        }
-
-        CompletionTracker.registerCompletion();
+        writeOutFiles();
     }
 
-    private boolean isCreatingSmallerFiles() {
-        return AgentExecutionInfo.getDefaultInstance().isCreatingSmallerFiles();
+    private String getRandomWords() {
+        int wordCount = isCreatingSmallerFiles() ? 20 : 6000;
+        return RandomWords.getWords(wordCount);
     }
 
-    private Properties getDocumentProperties() {
-        return AgentExecutionInfo.getDefaultInstance().getDocumentProperties();
+    @Override
+    protected void performWriteOfFile(FileOutputStream out) throws IOException {
+        document.write(out);
+    }
+
+    protected String getFileNameSuffix() {
+        return "_MSWordSSMR.docx";
     }
 }

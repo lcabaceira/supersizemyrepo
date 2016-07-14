@@ -36,6 +36,10 @@ public class RandomWords {
         }
     }
 
+    public static void useFewerWords() {
+        maxWordsInMemory = 1000;
+    }
+
     private static String getWord() {
         int randomNumber = ThreadLocalRandom.current().nextInt(wordList.size());
         return wordList.get(randomNumber);
@@ -73,22 +77,65 @@ public class RandomWords {
     }
 
     private static ArrayList<String> readWordsFromFile(int maxNumWords) {
-        ArrayList<String> words = new ArrayList<>(maxNumWords);
-        try {
-            InputStreamReader isr = new InputStreamReader(RandomWords.class.getResourceAsStream(wordFileName));
-            BufferedReader br = new BufferedReader(isr);
-            String tmp;
-            tmp = br.readLine(); // read first line of file.
+        final LineReader lineReader = new LineReader(maxNumWords, RandomWords.wordFileName);
+        lineReader.readLinesFromFile();
+        return lineReader.getLines();
+    }
 
-            while ((tmp != null) && ((words.size() + 1) < maxNumWords)) {
-                words.add(tmp);
-                tmp = br.readLine();
-            }
-            br.close();
-        } catch (IOException e) {
-            logger.error("Unable to read words file", e);
+    private static class LineReader {
+        private final int maxLines;
+        private final String fileName;
+        private BufferedReader lineReader = null;
+        private ArrayList<String> lines;
+
+        LineReader(int maxLines, String fileName) {
+            this.maxLines = maxLines;
+            this.fileName = fileName;
+            lines = new ArrayList<>(maxLines);
         }
 
-        return words;
+        private void closeReader() {
+            if (lineReader != null) {
+                try {
+                    lineReader.close();
+                } catch (IOException e) {
+                    logger.error("Unable to close file: " + fileName, e);
+                }
+            }
+        }
+
+        ArrayList<String> getLines() {
+            return lines;
+        }
+
+        void readLinesFromFile() {
+            try {
+                readFile();
+            } catch (IOException e) {
+                logger.error("Error reading file: " + fileName, e);
+            }
+            finally {
+                closeReader();
+            }
+        }
+
+        private void readFile() throws IOException {
+            openFileForReading();
+
+            readLines();
+        }
+
+        private void readLines() throws IOException {
+            String currentLine = lineReader.readLine(); // read first line of file.
+            while ((currentLine != null) && (lines.size() <= maxLines)) {
+                lines.add(currentLine);
+                currentLine = lineReader.readLine();
+            }
+        }
+
+        private void openFileForReading() {
+            InputStreamReader inputStreamReader = new InputStreamReader(RandomWords.class.getResourceAsStream(fileName));
+            lineReader = new BufferedReader(inputStreamReader);
+        }
     }
 }

@@ -1,9 +1,6 @@
 package org.alfresco.consulting.tools.content.creator.agents;
 
-import org.alfresco.consulting.tools.content.creator.BulkImportManifestCreator;
-import org.alfresco.consulting.tools.content.creator.FolderManager;
 import org.alfresco.consulting.tools.content.creator.ImageManager;
-import org.alfresco.consulting.tools.content.creator.executor.parameters.AgentExecutionInfo;
 import org.alfresco.consulting.words.RandomWords;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,14 +11,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Properties;
 
-public class MSPowerPointAgent extends Thread implements Runnable {
+public class MSPowerPointAgent extends AgentWithFileWriter {
     private static final Log logger = LogFactory.getLog(MSPowerPointAgent.class);
+    private XMLSlideShow ppt;
 
-    public void run() {
-        RandomWords.init();
-        XMLSlideShow ppt = new XMLSlideShow();
+    protected Log getLogger() {
+        return logger;
+    }
+
+    protected void createFile() {
+        ppt = new XMLSlideShow();
 
         // there can be multiple masters each referencing a number of layouts
         // for demonstration purposes we use the first (default) slide master
@@ -39,44 +39,36 @@ public class MSPowerPointAgent extends Thread implements Runnable {
         body2.addNewTextParagraph().addNewTextRun().setText(RandomWords.getWords(20));
         body2.addNewTextParagraph().addNewTextRun().setText(RandomWords.getWords(20));
 
-        XSLFSlide slide[] = {ppt.createSlide(), ppt.createSlide(), ppt.createSlide(), ppt.createSlide(), ppt.createSlide(), ppt.createSlide()};
-
         // random image
         if (!isCreatingSmallerFiles()) {
-            for (int i = 0; i < 6; i++) {
-                File randomImage = ImageManager.getImageManager().getRandomImage();
-                byte[] pictureData = new byte[0];
-                try {
-                    pictureData = IOUtils.toByteArray(new FileInputStream(randomImage));
-                } catch (IOException e) {
-                    logger.error("Unable to get bytes of " + randomImage, e);
-                }
-                int idx = ppt.addPicture(pictureData, XSLFPictureData.PICTURE_TYPE_PNG);
-                slide[i].createPicture(idx);
+            createSlidesWithImages();
+        }
+
+        writeOutFiles();
+    }
+
+    private void createSlidesWithImages() {
+        XSLFSlide slide[] = {ppt.createSlide(), ppt.createSlide(), ppt.createSlide(), ppt.createSlide(),
+                ppt.createSlide(), ppt.createSlide()};
+
+        for (XSLFSlide aSlide : slide) {
+            File randomImage = ImageManager.getImageManager().getRandomImage();
+            byte[] pictureData = new byte[0];
+            try {
+                pictureData = IOUtils.toByteArray(new FileInputStream(randomImage));
+            } catch (IOException e) {
+                getLogger().error("Unable to get bytes of " + randomImage, e);
             }
+            int idx = ppt.addPicture(pictureData, XSLFPictureData.PICTURE_TYPE_PNG);
+            aSlide.createPicture(idx);
         }
-
-        String fileName = FolderManager.createFileName("_MSpowerpointSSMR.ppt");
-
-        try {
-            final String folderLocation = FolderManager.getFolderLocation();
-            FileOutputStream out = new FileOutputStream(folderLocation + "/" + fileName);
-            BulkImportManifestCreator.createBulkManifest(fileName, folderLocation, getDocumentProperties());
-            ppt.write(out);
-            out.close();
-        } catch (IOException e) {
-            logger.error("Unable to save PowerPoint document: " + fileName, e);
-        }
-
-        CompletionTracker.registerCompletion();
     }
 
-    private boolean isCreatingSmallerFiles() {
-        return AgentExecutionInfo.getDefaultInstance().isCreatingSmallerFiles();
+    protected void performWriteOfFile(FileOutputStream out) throws IOException {
+        ppt.write(out);
     }
 
-    private Properties getDocumentProperties() {
-        return AgentExecutionInfo.getDefaultInstance().getDocumentProperties();
+    protected String getFileNameSuffix() {
+        return "_MSpowerpointSSMR.ppt";
     }
-
 }

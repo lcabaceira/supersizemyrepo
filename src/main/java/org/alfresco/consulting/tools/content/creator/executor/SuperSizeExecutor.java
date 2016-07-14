@@ -54,11 +54,21 @@ class SuperSizeExecutor {
         try {
             while (!executor.isTerminated()) {
                 executor.awaitTermination(5, TimeUnit.SECONDS);
-                logger.info("Completed " + CompletionTracker.getNumberOfCompletions() + " of " + getNumThreads());
+                displayStatusMessage();
             }
         } catch (InterruptedException e) {
             logger.error("Error executing threads.", e);
         }
+    }
+
+    private void displayStatusMessage() {
+        final int numberOfCompletions = CompletionTracker.getNumberOfCompletions();
+        if (numberOfCompletions > 0)
+            logger.info("Completed " + numberOfCompletions + " of " + getNumThreads() +
+                    " at a rate of about " + stopwatch.elapsed(TimeUnit.MILLISECONDS) / numberOfCompletions +
+                    " milliseconds per document.");
+        else
+            logger.debug("No items completed yet.");
     }
 
     private void stopAcceptingNewThreadsInPool() {
@@ -111,6 +121,13 @@ class SuperSizeExecutor {
         FolderManager.getInstance().setMaxFilesPerFolder(Integer.valueOf(getMaxFiles()));
         FolderManager.getInstance().setRootDeploymentLocation(getDeployPath());
         ImageManager.initializeImageManager(getImages());
+
+        initializeRandomWords();
+    }
+
+    private void initializeRandomWords() {
+        if (executorParameters.getAgentExecutionInfo().isCreatingSmallerFiles())
+            RandomWords.useFewerWords();
 
         RandomWords.init();
     }
