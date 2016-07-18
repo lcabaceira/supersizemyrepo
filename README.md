@@ -1,7 +1,33 @@
 supersizemyrepo
 ===============
 
-A new way to create lots of content in your alfresco repository.
+A new way to create lots of content in your alfresco repository.  It 
+has two modes of running; standard and small file.
+<ul>
+    <li>Standard
+        <ul>
+            <li>Creates relatively large files</li>
+            <li>All files have image content</li>
+            <li>Uses a large word base from which words are randomly 
+            chosen</li>
+            <li>Adds a large number of words to documents</li>
+            <li>Will create a very large full text index</li>
+            <li>Best for testing large file system usage</li>
+        </ul>
+    </li>
+    <li>Small Files
+        <ul>
+            <li>Creates small files</li>
+            <li>Runs extremely quickly (around 10 ms a document 
+            depending on the environment being run in)</li>
+            <li>Uses a reduced word base from which words are randomly 
+            chosen</li>
+            <li>Creates significantly smaller full text index</li>
+            <li>Best for testing large numbers of documents without
+            taxing the file system or full text engine as much</li>
+        </ul>
+    </li>
+</ul>
 
 This tool enable you to create (bulk-import-ready) content and metadata for your alfresco repository.
 
@@ -13,30 +39,36 @@ Types of documents created
 MS Word Documents (.doc) </li>
 <ul>
 <li>Average size of 1024k </li>
+<li>Average size of 4k (small file option specified)</li>
 <li>Correspondent Meta-Data xml properties files</li>
 </ul>
 
 <li>MS Excel Documents(.xls)</li>
 <ul>
 <li>Average size of 800k </li>
+<li>Average size of 22k (small file option specified)</li>
 <li>Correspondent Meta-Data xml properties files</li>
 </ul>
 
 <li>Pdf documents(.pdf)</li>
 <ul>
 <li>Average size of 10MB </li>
+<li>Average size of 15k (small file option specified)</li>
 <li>Correspondent Meta-Data xml properties files</li>
 </ul>
 
 <li>MS PowerPoint Presentation Documents(.ppt)</li>
 <ul>
 <li>Average size of 5MB </li>
+<li>Average size of 25k (small file option specified)</li>
 <li>Correspondent Meta-Data xml properties files</li>
 </ul>
 
 <li>Jpeg images(.jpg)</li>
 <ul>
-<li>Average size of 2MB </li>
+<li>Average size using supplied image folder is 2MB </li>
+<li>Folder with smaller images should be specified when the small file 
+option is specified</li>
 <li>Correspondent Meta-Data xml properties files</li>
 </ul>
 
@@ -47,63 +79,27 @@ Pre-Requirements
 <b>NOTE :</b>Runing the compiled version (available in the uiJars folder) has no pre-requirements apart from having java installed on your laptop. <br/><br/>
 If you wish to build the tool and use the standalone (properties file based) version you will need the following:
 
-<b>1 - Software requirements</b><br/>
+<ol>
+<li><b>Software requirements</b><br/>
 <ul>
 <li>JDK 1.7 </li>
 <li>Apache Maven 3.0.4+</li>
 </ul>
+</li>
 
-<b>2 - Configuration requirements</b><br/><br/>
-During the installation of maven, a new file name settings.xml was created. This file is our entry point to the your local maven settings configuration, including the remote maven repositories.
-Edit your settings.xml file and update the server’s section including the alfresco server id and your credentials.
-
-Note that the root pom.xml references 2 different repositories : <b>alfresco-private</b>, <b>alfresco-private-snapshots</b> . The id of each repository must match with a server id on your settings.xml (where you specify your credentials for that server).
-
-Section from configuration settings.xml
-
-```xml
-...
-        <server>
-            <id>alfresco-public</id>
-            <username>YOUR_USERNAME</username>
-            <password>YOUR_PASSWORD</password>
-        </server>
-        <server>
-            <id>alfresco-public-snapshots</id>
-            <username>YOUR_USERNAME</username>
-            <password>YOUR_PASSWORD</password>
-        </server>
-        
- ...
-```
-
-Section from the root pom.xml maven build file
-
-```xml
-...
-        <repository>
-            <id>alfresco-public</id>
-            <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
-        </repository>
-        <repository>
-            <id>alfresco-public-snapshots</id>
-            <url>https://artifacts.alfresco.com/nexus/content/groups/public-snapshots</url>
-        </repository>
- ...
-```
-
-<b>3 - Location/Path Where to create the files </b><br/><br/>
+<li><b>Location/Path Where to create the files </b><br/><br/>
 
 Edit the src/main/java/super-size-my-repo.properties and configure your deployment location and the images location.
 
 <b>files_deployment_location</b> : Shoud be a in a place inside your contentStore. This will be the root for the in-place bulkImport.<br/><br/>
 <b>images_location</b> : The tool randomly chooses from a folder of local images to include on the various document types. You need to set the images_location to a folder where you have <b>jpg</b> images. You can use the sample images by pointing the images_location to your <project location>/images. The bigger your images are, the bigger your target documents will be. For the sizes of the documents considered we expect jpg images with aprox <b>1.5MB</b>
-
+</li>
+</ol>
 
 Tool Configuration files and options
 -------
 
-You find the tool configuration file under src/main/java/super-size-my-repo.properties
+You find the tool configuration file under ssmr-core/src/main/resources/super-size-my-repo.properties
 This configuration file contains the following pre-explanatory properties.
 
 ```xml
@@ -119,16 +115,32 @@ This configuration file contains the following pre-explanatory properties.
 The only 2 properties that are mandatory to adjust are files_deployment_location and images_location
 All of the other properties have default running values.
 
+You can also remove or modify the ssmr-core/src/main/resources/document-properties.properties file.
+This is a standard properties file that defines the properties for a document.  The property name
+corresponds to an Alfresco property, just remember to escape the colon.  In addition you must
+specify a 'type' property to define the Alfresco object type of the document.
+
 
 How to run with maven ?
 -------
 Issue the following maven command to generate the targets (executable jar) from the project root.
 
-P.S. - Don't forget to configure your properties file.
+P.S. - Don't forget to configure your properties file if you will be running without the UI.
 
-<b>mvn clean install</b> <br/>
+<b>mvn -P&lt;environment&gt; clean install</b> <br/>
+where environment is one of the following:
+<dl>
+    <dt>lnx</dt>
+    <dd>Any flavor of Linux</dd>
+    <dt>osx</dt>
+    <dd>Mac OS X</dd>
+    <dt>win64</dt>
+    <dd>64-bit Windows (refers to Java not necessarily OS)</dd>
+    <dt>winx86</dt>
+    <dd>32-bit Windows (refers to Java not necessarily OS)</dd>
+</dl>
 
-This will build and generate the executable jar on the target directory.
+This will build and generate the executable jar in the target directory of the ssmr-core project.
 
 To run this jar, just type 
 
@@ -138,10 +150,12 @@ java -jar super-size-my-repo-<YOUR_VERSION>-SNAPSHOT-jar-with-dependencies.jar
  ...
 ```
 
+You can also run the UI from the command line using the instructions below noting that the UI JAR is built into the uiJars folder under the root project.
+
 Running with the UI ?
 -------
 
-![Screenshot of User Interface Version](https://github.com/lcabaceira/supersizemyrepo/blob/master/images/ui.png)
+![Screenshot of User Interface Version](https://github.com/eamell/supersizemyrepo/blob/master/images/ui.png)
 
 
 If you wish to run the tool without having to build it and you want to use the nice UI (many thanks to Alex Strachan), just pick up one the jars available in the folder uiJars and run them with java -jar.
