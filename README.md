@@ -127,7 +127,7 @@ Issue the following maven command to generate the targets (executable jar) from 
 
 P.S. - Don't forget to configure your properties file if you will be running without the UI.
 
-<b>mvn -P<environment> clean install</b> <br/>
+<b>mvn -P&lt;environment&gt; clean install</b> <br/>
 where environment is one of the following:
 <dl>
     <dt>lnx</dt>
